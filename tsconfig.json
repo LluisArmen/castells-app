@@ -1,4 +1,7 @@
 {
-  "compilerOptions": {},
+  "compilerOptions": {
+    "types": ["@types/react-native-vector-icons"],
+  },
+  // "extends": "@tsconfig/react-native/tsconfig.json"
   "extends": "expo/tsconfig.base"
 }
