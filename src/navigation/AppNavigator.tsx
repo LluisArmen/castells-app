@@ -6,7 +6,6 @@ import AdminScreen from '../screens/AdminScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DevScreen from '../screens/DevScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { UserRole } from '../models/User';
 import useUserStore from '../store/UserStore';
 
 const Tab = createBottomTabNavigator();
@@ -14,7 +13,7 @@ const Tab = createBottomTabNavigator();
 const AppNavigator = () => {
   const {user} = useUserStore()
 
-  if (user.role === UserRole.Admin) {
+  if (user.isAdmin === true) {
     return (
       <Tab.Navigator>
           <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
@@ -109,7 +108,7 @@ const profileTabOptions = {
   },
   tabBarIcon: ({ focused, color, size }) => (
     <MaterialIcons 
-        name="admin-panel-settings"
+        name="person"
         color={focused ? 'blue' : 'gray'}
         size={24}
     />

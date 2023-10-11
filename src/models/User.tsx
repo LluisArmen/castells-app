@@ -1,15 +1,10 @@
-export const UserRole = {
-    Admin: 'admin',
-    User: 'user',
-};
-
 export interface User {
-    id: string;
+    id?: string;
     email: string;
-    name: string;
-    surname: string;
-    organisation: string;
-    role: string;
+    name?: string;
+    surname?: string;
+    organisation?: string;
+    isAdmin?: boolean;
 }
 
 export const defaultUser: User = {
@@ -18,5 +13,5 @@ export const defaultUser: User = {
     name: 'Test',
     surname: 'User',
     organisation: 'My Organisation',
-    role: UserRole.User
+    isAdmin: true,
 };

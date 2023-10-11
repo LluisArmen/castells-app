@@ -3,16 +3,21 @@ import { User, defaultUser } from '../models/User'
 
 interface UserState {
   user: User,
-  setRole: (newRole: string) => void
+  setUser: (newUser: User) => void,
+  setRole: (isAdmin: boolean) => void,
 }
 
 const useUserStore = create<UserState>((set) => ({
   user: defaultUser,
-  setRole: (newRole: string) => 
+  setUser: (newUser: User) =>
+    set((state) => ({
+      user: newUser
+    })),
+  setRole: (isAdmin: boolean) => 
     set((state) => ({
       user: {
         ...state.user,
-        role: newRole,
+        isAdmin: isAdmin,
       },
     }
   )),

@@ -6,6 +6,7 @@ import { HStack, Spacer } from 'react-native-stacks';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 const RegistrationScreen = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ const RegistrationScreen = () => {
       alert('Registration failed: ' + error.message);
     } finally {
       setLoading(false);
-    }
+      }
   }
 
   return (
@@ -36,6 +37,7 @@ const RegistrationScreen = () => {
             <Spacer></Spacer>
           </HStack>
           
+          <TextInput value={name} style={styles.textInput} placeholder='Name' autoCapitalize='none' onChangeText={(text) => setName(text)}></TextInput>
           <TextInput value={email} style={styles.textInput} placeholder='Email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
           <TextInput secureTextEntry={true} value={password} style={styles.textInput} placeholder='Password' autoCapitalize='none' onChangeText={(text) => setPassword(text)}></TextInput>
           

@@ -4,13 +4,16 @@ import { NavigationProp } from '@react-navigation/native';
 import { typography } from '../design/Typography';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { HStack, Spacer, VStack } from 'react-native-stacks';
-import CustomButton from '../components/CustomButton'
+import CustomButton from '../components/CustomButton';
+import useUserStore from '../store/UserStore';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const ProfileScreen = ({ navigation }: RouterProps) => {
+  const {user} = useUserStore()
+
   return (
     <View style={styles.container}>
         <ScrollView
@@ -22,6 +25,8 @@ const ProfileScreen = ({ navigation }: RouterProps) => {
               <Text style={typography.header}>{"Profile"}</Text>
               <Spacer></Spacer>
             </HStack>
+            <Text style={typography.body.medium}>{user.name}</Text>
+            <Text style={typography.body.medium}>{user.email}</Text>
             <Spacer></Spacer>
             <HStack>
               <Spacer></Spacer>

@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }: RouterProps) => {
       alert('Sign In failed: ' + error.message);
     } finally {
       setLoading(false);
-    }
+      }
   }
 
   return (
