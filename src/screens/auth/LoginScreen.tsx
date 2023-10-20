@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Alert } from 'react-native';
 import { typography } from '../../design/Typography';
 import { FIREBASE_AUTH } from '../../../FirebaseConfig';
 import { HStack, Spacer } from 'react-native-stacks';
@@ -16,11 +16,25 @@ const LoginScreen = ({ navigation }: RouterProps) => {
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
 
+  function validateInputValues() {
+    if (email && password) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   const signIn = async () => {
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
+      if (validateInputValues()) {
+        const response = await signInWithEmailAndPassword(auth, email, password);
+        console.log(response);
+      } else {
+        Alert.alert('Error', 'Please fill in all the fields', [
+          {text: 'OK'},
+        ]);
+      }
     } catch (error: any) {
       console.log(error);
       alert('Sign In failed: ' + error.message);
