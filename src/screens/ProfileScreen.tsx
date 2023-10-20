@@ -12,7 +12,7 @@ interface RouterProps {
 }
 
 const ProfileScreen = ({ navigation }: RouterProps) => {
-  const {user} = useUserStore()
+  const {user, setUser} = useUserStore()
 
   return (
     <View style={styles.container}>
@@ -30,7 +30,7 @@ const ProfileScreen = ({ navigation }: RouterProps) => {
             <Spacer></Spacer>
             <HStack>
               <Spacer></Spacer>
-              <CustomButton title="Log Out" onPress={() => FIREBASE_AUTH.signOut()} />
+              <CustomButton title="Log Out" onPress={() => {FIREBASE_AUTH.signOut(), setUser(null)}} />
               <Spacer></Spacer>
             </HStack>
           </VStack>

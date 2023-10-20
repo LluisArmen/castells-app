@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AppNavigator from './src/navigation/AppNavigator';
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import { FIREBASE_AUTH } from './FirebaseConfig';
 import useUserStore from './src/store/UserStore';
 import LoginNavigator from './src/navigation/AuthNavigator';
@@ -14,9 +14,13 @@ const App = () => {
   useEffect(() => {
     try {
       onAuthStateChanged(FIREBASE_AUTH, (currentUser) => {
-        console.log('-> LogIn sucess!!');
-        setUser(currentUser);
-    });
+        if (currentUser && currentUser.emailVerified) {
+          console.log('-> LogIn sucess!!');
+          setUser(currentUser);
+        } else {
+          console.log('-> user is logged out');
+        }
+      });
     } catch (error: any) {
       console.log(error)
     }

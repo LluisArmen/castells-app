@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardA
 import { typography } from '../../design/Typography';
 import { FIREBASE_AUTH } from '../../../FirebaseConfig';
 import { HStack, Spacer } from 'react-native-stacks';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { NavigationProp } from '@react-navigation/native';
 
 interface RouterProps {
@@ -37,6 +37,7 @@ const RegistrationScreen = ({ navigation }: RouterProps) => {
       let [isValid, errorMessage] = validateInputValues()
       if (isValid) {
         const response = await createUserWithEmailAndPassword(auth, email, password);
+        sendEmailVerification(response.user)
         console.log(response);
         Alert.alert('Done!', 'Check your email to verify your account', [
           {text: 'OK', onPress: () => navigation.navigate('Login')},

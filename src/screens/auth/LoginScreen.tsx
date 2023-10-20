@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardA
 import { typography } from '../../design/Typography';
 import { FIREBASE_AUTH } from '../../../FirebaseConfig';
 import { HStack, Spacer } from 'react-native-stacks';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth';
 import { NavigationProp } from '@react-navigation/native';
+import { User } from 'firebase/auth'
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -24,12 +25,23 @@ const LoginScreen = ({ navigation }: RouterProps) => {
     }
   }
 
+  function isUserEmailVerified(currentUser: User) {
+    if (currentUser && currentUser.emailVerified) {
+      console.log('-> User email is verified');
+    } else {
+      Alert.alert('Error', 'Check your email to verify your account', [
+        {text: 'OK'},
+        {text: 'Send verification email again', onPress: () => sendEmailVerification(currentUser) },
+      ]);
+    }
+  }
+
   const signIn = async () => {
     setLoading(true);
     try {
       if (validateInputValues()) {
         const response = await signInWithEmailAndPassword(auth, email, password);
-        console.log(response);
+        isUserEmailVerified(response.user)
       } else {
         Alert.alert('Error', 'Please fill in all the fields', [
           {text: 'OK'},
