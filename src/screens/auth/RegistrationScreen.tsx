@@ -6,7 +6,7 @@ import { HStack, Spacer } from 'react-native-stacks';
 import { User, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { NavigationProp } from '@react-navigation/native';
 import { emptyUser } from '../../models/User' 
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;

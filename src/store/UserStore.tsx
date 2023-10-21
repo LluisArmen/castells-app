@@ -1,15 +1,15 @@
 import { create } from 'zustand'
-import { Role, User, defaultUser } from '../models/User'
+import { Role, AppUser, defaultUser } from '../models/User'
 
 interface UserState {
-  user: User,
-  setUser: (newUser: User) => void,
+  user: AppUser,
+  setUser: (newUser: AppUser) => void,
   setRole: (newRole: Role) => void,
 }
 
 const useUserStore = create<UserState>((set) => ({
   user: null, //defaultUser
-  setUser: (newUser: User) =>
+  setUser: (newUser: AppUser) =>
     set((state) => ({
       user: newUser
     })),

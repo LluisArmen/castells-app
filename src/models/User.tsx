@@ -4,7 +4,7 @@ export enum Role {
     owner = 'OWNER',
 }
 
-export interface User {
+export interface AppUser {
     id?: string;
     email: string;
     name?: string;
@@ -14,7 +14,7 @@ export interface User {
     role?: Role;
 }
 
-export const defaultUser: User = {
+export const defaultUser: AppUser = {
     id: '123',
     email: 'test@email.com',
     name: 'Test',
@@ -24,7 +24,7 @@ export const defaultUser: User = {
     role: Role.user,
 };
 
-export const emptyUser: User = {
+export const emptyUser: AppUser = {
     id: null,
     email: null,
     name: null,

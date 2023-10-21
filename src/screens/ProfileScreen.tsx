@@ -26,6 +26,7 @@ const ProfileScreen = ({ navigation }: RouterProps) => {
               <Spacer></Spacer>
             </HStack>
             <Text style={typography.body.medium}>{user.name}</Text>
+            <Text style={typography.body.medium}>{user.surname}</Text>
             <Text style={typography.body.medium}>{user.email}</Text>
             <Spacer></Spacer>
             <HStack>
