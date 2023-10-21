@@ -7,13 +7,14 @@ import ProfileScreen from '../screens/ProfileScreen';
 import DevScreen from '../screens/DevScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../store/UserStore';
+import { Role } from '../models/User';
 
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   const {user} = useUserStore()
 
-  if (user.isAdmin === true) {
+  if (user.role === Role.admin) {
     return (
       <Tab.Navigator>
           <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
