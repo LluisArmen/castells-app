@@ -5,22 +5,27 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { FIREBASE_AUTH, FIREBASE_DB } from './FirebaseConfig';
 import useUserStore from './src/store/UserStore';
-import LoginNavigator from './src/navigation/AuthNavigator';
-import { doc, getDoc } from "firebase/firestore";
+import { LoginNavigator, OrganisationBifurcationNavigator } from './src/navigation/AuthNavigator';
+import { doc, getDoc, QueryDocumentSnapshot } from "firebase/firestore";
 import { Role, AppUser, defaultUser } from './src/models/User'
+import { Organisation } from './src/models/Organisation';
+import useOrganisationStore from './src/store/OrganisationStore';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const {user, setUser} = useUserStore()
+  const {organisation, setOrganisation} = useOrganisationStore()
 
-  async function getUserData(currentUser: User): Promise<void> {
+  async function getUserData(currentUser: User) {
     const docRef = doc(FIREBASE_DB, "users", currentUser.uid);
     try {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) { 
-        const usr = docSnap.data() as AppUser
-        setUser(usr)
+        const usr = docSnap.data() as AppUser;
+        setUser(usr);
+        console.log('-> 🙋‍♀️ Current user: ', usr);
+        return usr.organisation
       } else {
         console.log('❌ Error fetching user data');
         throw new Error("Could not get User data. Please try again");
@@ -31,13 +36,34 @@ const App = () => {
     }
   }
 
+  async function getOrganisationData(organisationId: string) {
+    console.log('-> ⏳ Getting organisation data...');
+    try {
+      const docRef = doc(FIREBASE_DB, "organisations", organisationId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const org = docSnap.data() as Organisation;
+        console.log("-> 📎 My organisation is called: ", org.title);
+        setOrganisation(org);
+      } else {
+        console.log("❌ Error: could not get Organisation data1");
+        throw new Error("Could not get Organisation data. Please try again");
+      }
+    } catch (error) {
+      console.log("❌ Error: could not get Organisation data2:", error);
+      throw new Error("❌ Error: could not get Organisation data3: ", error);
+    }
+  }
+
   useEffect(() => {
     const handleAuthStateChange = async (currentUser: User) => {
       try {
         if (currentUser && currentUser.emailVerified) {
+          const organisationId = await getUserData(currentUser);
+          if (organisationId) {
+            await getOrganisationData(organisationId);
+          }
           console.log('-> LogIn success!!');
-          await getUserData(currentUser);
-          console.log('-> Current user: ', user);
         } else {
           console.log('-> User is logged out');
         }
@@ -57,13 +83,19 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Login'>
-        {user ? (
-          <Stack.Screen name='Cappstells' component={AppNavigator} options={{ headerShown: false }}/>
+      { user ? (
+        user.organisation ? (
+          <AppNavigator />
         ) : (
+          <Stack.Navigator initialRouteName="OrganisationBifurcationScreen">
+            <Stack.Screen name='OrganisationBifurcationNavigator' component={OrganisationBifurcationNavigator} options={{ headerShown: false }}/>
+          </Stack.Navigator>
+        )
+      ) : (
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name='LoginNavigator' component={LoginNavigator}  options={{ headerShown: false }}/>
-        )}
-      </Stack.Navigator>
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
 };
