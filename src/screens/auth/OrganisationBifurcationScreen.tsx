@@ -4,6 +4,7 @@ import { typography } from '../../design/Typography';
 import { NavigationProp } from '@react-navigation/native';
 import useUserStore from '../../store/UserStore';
 import { Spacer } from 'react-native-stacks';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 interface RouterProps {
     navigation: NavigationProp<any, any>;
@@ -13,23 +14,25 @@ const OrganisationBifurcationScreen = ({ navigation }: RouterProps) => {
     const {user} = useUserStore()
 
     return (
-        <View style={styles.container}>
-            <ScrollView
-                contentContainerStyle={styles.scrollViewContent}
-                showsVerticalScrollIndicator={false}
-            >
-                <Text style={typography.header}>{`Hi ${user.name}!`}</Text>
-                <Text style={typography.title.medium}>{"Welcome to Cappstells. "}</Text>
-                <Text style={typography.body.medium}>{"Now you have to create or join an organisation:"}</Text>
+        <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+            <View style={styles.container}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollViewContent}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Text style={typography.header}>{`Hi ${user.name}!`}</Text>
+                    <Text style={typography.title.medium}>{"Welcome to Cappstells. "}</Text>
+                    <Text style={typography.body.medium}>{"Now you have to create or join an organisation:"}</Text>
 
-                <View style={ {marginTop: 25, flex: 1, justifyContent: 'center', alignItems: 'center',} }>
-                    <Button title="Create Organisation" onPress={() => navigation.navigate('CreateOrganisationScreen')} />
-                    <Button title="Join Organisation" onPress={() => navigation.navigate('JoinOrganisationScreen')} />
-                </View>
+                    <View style={ {marginTop: 25, flex: 1, justifyContent: 'center', alignItems: 'center',} }>
+                        <Button title="Create Organisation" onPress={() => navigation.navigate('CreateOrganisationScreen')} />
+                        <Button title="Join Organisation" onPress={() => navigation.navigate('JoinOrganisationScreen')} />
+                    </View>
 
-            </ScrollView>
-        </View>
-  );
+                </ScrollView>
+            </View>
+        </TouchableWithoutFeedback>
+    );
 };
 
 const styles = StyleSheet.create({

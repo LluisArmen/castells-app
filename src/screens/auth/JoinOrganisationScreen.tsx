@@ -9,6 +9,7 @@ import { Organisation } from '../../models/Organisation';
 import { RequestStatus, emptyRequest } from '../../models/Request';
 import useOrganisationStore from '../../store/OrganisationStore';
 import { v4 as uuid } from 'uuid';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const JoinOrganisationScreen = () => {
     const {user, setUser} = useUserStore()
@@ -73,7 +74,7 @@ const JoinOrganisationScreen = () => {
     async function updateUserData(): Promise<void> {
         try {
             await updateDoc(doc(FIREBASE_DB, "users", user.id), { 
-                organisation: "pending",
+                organisationId: "pending",
             })
             console.log("⏳ Waiting for acceptance...");
             const updatedUser = user;
@@ -86,29 +87,31 @@ const JoinOrganisationScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={typography.header}>{"Join Organisation"}</Text>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View>
-                    <HStack>
-                        <Spacer></Spacer>
-                        <View style={styles.rectangle} />
-                        <Spacer></Spacer>
-                    </HStack>
-                    <KeyboardAvoidingView behavior='position'>
-                    <TextInput value={organisationId} style={styles.textInput} placeholder='title' onChangeText={(text) => setOrganisationId(text)}></TextInput>
+        <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+            <View style={styles.container}>
+                <Text style={typography.header}>{"Join Organisation"}</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View>
+                        <HStack>
+                            <Spacer></Spacer>
+                            <View style={styles.rectangle} />
+                            <Spacer></Spacer>
+                        </HStack>
+                        <KeyboardAvoidingView behavior='position'>
+                        <TextInput value={organisationId} style={styles.textInput} placeholder='title' onChangeText={(text) => setOrganisationId(text)}></TextInput>
 
-                    { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
-                    : (
-                        <>
-                        <Button title="Join" onPress={ joinOrganisation } />
-                        </>
-                    )}
+                        { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
+                        : (
+                            <>
+                            <Button title="Join" onPress={ joinOrganisation } />
+                            </>
+                        )}
 
-                    </KeyboardAvoidingView>
-                </View>
-            </ScrollView>
-        </View>
+                        </KeyboardAvoidingView>
+                    </View>
+                </ScrollView>
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 

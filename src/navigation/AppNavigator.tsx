@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 const AppNavigator = () => {
   const {user} = useUserStore()
 
-  if (user.role === Role.admin) {
+  if (user.role === Role.admin || user.role === Role.owner) {
     return (
       <Tab.Navigator>
           <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />

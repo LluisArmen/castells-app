@@ -7,6 +7,7 @@ import { User, createUserWithEmailAndPassword, sendEmailVerification } from 'fir
 import { NavigationProp } from '@react-navigation/native';
 import { emptyUser } from '../../models/User' 
 import { doc, setDoc } from "firebase/firestore";
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -79,32 +80,33 @@ const RegistrationScreen = ({ navigation }: RouterProps) => {
   }
 
   return (
-    
-    <View style={styles.container}>
-      <View style={styles.body}>
-        <KeyboardAvoidingView behavior='position'>
-          <HStack style={styles.title}>
-            <Spacer></Spacer>
-            <Text style={typography.title.large}>{"Setup your Profile"}</Text>
-            <Spacer></Spacer>
-          </HStack>
-          
-          <TextInput value={name} style={styles.textInput} placeholder='name' onChangeText={(text) => setName(text)}></TextInput>
-          <TextInput value={surname} style={styles.textInput} placeholder='surname' onChangeText={(text) => setSurmame(text)}></TextInput>
-          <TextInput value={email} style={styles.textInput} placeholder='email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
-          <TextInput secureTextEntry={true} value={password} style={[styles.textInput, {marginTop: 30}]} placeholder='password' autoCapitalize='none' onChangeText={(text) => setPassword(text)}></TextInput>
-          <TextInput secureTextEntry={true} value={repeatPassword} style={styles.textInput} placeholder='repeat password' autoCapitalize='none' onChangeText={(text) => setRepeatPassword(text)}></TextInput>
+    <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+      <View style={styles.container}>
+        <View style={styles.body}>
+          <KeyboardAvoidingView behavior='position'>
+            <HStack style={styles.title}>
+              <Spacer></Spacer>
+              <Text style={typography.title.large}>{"Setup your Profile"}</Text>
+              <Spacer></Spacer>
+            </HStack>
+            
+            <TextInput value={name} style={styles.textInput} placeholder='name' onChangeText={(text) => setName(text)}></TextInput>
+            <TextInput value={surname} style={styles.textInput} placeholder='surname' onChangeText={(text) => setSurmame(text)}></TextInput>
+            <TextInput value={email} style={styles.textInput} placeholder='email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
+            <TextInput secureTextEntry={true} value={password} style={[styles.textInput, {marginTop: 30}]} placeholder='password' autoCapitalize='none' onChangeText={(text) => setPassword(text)}></TextInput>
+            <TextInput secureTextEntry={true} value={repeatPassword} style={styles.textInput} placeholder='repeat password' autoCapitalize='none' onChangeText={(text) => setRepeatPassword(text)}></TextInput>
 
-          { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
-          : (
-            <>
-              <Button title="Create account" onPress={signUp} />
-            </>
-          )}
+            { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
+            : (
+              <>
+                <Button title="Create account" onPress={signUp} />
+              </>
+            )}
 
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

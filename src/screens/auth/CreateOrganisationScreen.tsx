@@ -8,6 +8,7 @@ import { HStack, Spacer } from 'react-native-stacks';
 import { emptyOrganisation } from '../../models/Organisation';
 import { v4 as uuid } from 'uuid';
 import { Role } from '../../models/User';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const CreateOrganisationScreen = () => {
     const {user, setUser} = useUserStore()
@@ -44,12 +45,12 @@ const CreateOrganisationScreen = () => {
     async function updateUserData(organisationId: string) {
         try {
             await updateDoc(doc(FIREBASE_DB, "users", user.id), { 
-                organisation: organisationId,
+                organisationId: organisationId,
                 role: user.role
             })
             console.log("🎉 User added to DB!");
             const updatedUser = user
-            updatedUser.organisation = organisationId
+            updatedUser.organisationId = organisationId
             updatedUser.role = Role.owner
             setUser(updatedUser)
           } catch (error) {
@@ -59,31 +60,33 @@ const CreateOrganisationScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={typography.header}>{"Create Organisation"}</Text>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View>
-                    <HStack>
-                        <Spacer></Spacer>
-                        <View style={styles.rectangle} />
-                        <Spacer></Spacer>
-                    </HStack>
-                    <KeyboardAvoidingView behavior='position'>
-                    <TextInput value={title} style={styles.textInput} placeholder='title' onChangeText={(text) => setTitle(text)}></TextInput>
-                    <TextInput value={email} style={styles.textInput} placeholder='email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
-                    <TextInput value={description} style={styles.textInput} placeholder='description' onChangeText={(text) => setDescription(text)}></TextInput>
+        <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+            <View style={styles.container}>
+                <Text style={typography.header}>{"Create Organisation"}</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View>
+                        <HStack>
+                            <Spacer></Spacer>
+                            <View style={styles.rectangle} />
+                            <Spacer></Spacer>
+                        </HStack>
+                        <KeyboardAvoidingView behavior='position'>
+                        <TextInput value={title} style={styles.textInput} placeholder='title' onChangeText={(text) => setTitle(text)}></TextInput>
+                        <TextInput value={email} style={styles.textInput} placeholder='email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
+                        <TextInput value={description} style={styles.textInput} placeholder='description' onChangeText={(text) => setDescription(text)}></TextInput>
 
-                    { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
-                    : (
-                        <>
-                        <Button title="Create" onPress={ createOrganisation } />
-                        </>
-                    )}
+                        { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
+                        : (
+                            <>
+                            <Button title="Create" onPress={ createOrganisation } />
+                            </>
+                        )}
 
-                    </KeyboardAvoidingView>
-                </View>
-            </ScrollView>
-        </View>
+                        </KeyboardAvoidingView>
+                    </View>
+                </ScrollView>
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 

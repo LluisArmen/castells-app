@@ -85,7 +85,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      { user && user.organisationId ? (
+      { user ? (
         user.organisationId ? (
           (user.organisationId === "pending") ? (
             <Stack.Navigator initialRouteName="WaitRequestAcceptanceScreen">

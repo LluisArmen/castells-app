@@ -4,10 +4,13 @@ import { typography } from '../design/Typography';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 import { addDoc, collection, onSnapshot } from 'firebase/firestore';
 import { Spacer, VStack } from 'react-native-stacks';
-
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const AdminScreen = () => {
   const [event, setEvent] = useState('');
+  const [requests, setRequests] = useState<any[]>([]);
+  const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
+
 
   // async function updateOrganisationData(org: Organisation): Promise<void> {
     //     const updatedOrganisation = org;
@@ -23,30 +26,68 @@ const AdminScreen = () => {
     //         throw new Error("Could not update Organisation data. Please try again");
     //     }
     // }
-    
+
   useEffect(() => {}, []);
       const addEvent = async () => {
       const doc = await addDoc(collection(FIREBASE_DB, 'events'), { title: event });
       setEvent('');
-      console.log('🚀 Successfully added an event!', doc)
   };
+  //console.log('📧 You have a new join request')
+
+  useEffect(() => {
+    const requestRef = collection(FIREBASE_DB, 'requests');
+    const subscriber = onSnapshot(requestRef, {
+      next: (snapshot) => {
+        const newRequests = [];
+        snapshot.docs.forEach(doc => {
+          newRequests.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+
+        // Check if the initial fetch has completed
+        if (initialFetchCompleted) {
+          // Compare the previous requests with the newRequests length
+          if (requests.length != newRequests.length) {
+            console.log('📧 You have a new join request');
+            setRequests(newRequests);
+          }
+        } else {
+          // If it's the initial fetch, set the initialFetchCompleted flag to true
+          setRequests(newRequests);
+          setInitialFetchCompleted(true);
+        }
+      }
+    });
+
+    return () => subscriber();
+  }, [requests]);
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        // contentContainerStyle={styles.scrollViewContent}
-        showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
-      >
-        <Text style={typography.header}>{"Admin"}</Text>
+    <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+      <View style={styles.container}>
+        <ScrollView
+          // contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
+        >
+          <Text style={typography.header}>{"Admin"}</Text>
 
-        <View style={styles.addEventContainer}>
-          <Text style={typography.body.medium}>{"Create a new Event"}</Text>
-          <TextInput style={styles.inputText} placeholder='Title' onChangeText={(text: string) => setEvent(text)} value={event} />
-          <Button onPress={() => addEvent()} title='Add Event' disabled={event === ''} />
-        </View>
+          <View style={styles.addEventContainer}>
+            <Text style={typography.body.medium}>{"Create a new Event"}</Text>
+            <TextInput style={styles.inputText} placeholder='Title' onChangeText={(text: string) => setEvent(text)} value={event} />
+            <Button onPress={() => addEvent()} title='Add Event' disabled={event === ''} />
+          </View>
 
-      </ScrollView>
-    </View>
+          <View style={styles.requestsContainer}>
+            { requests.map((request) => (
+              <Text key={request.id} style={typography.body.small}>{request.name}</Text>
+            ))}
+          </View>
+
+        </ScrollView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -78,8 +119,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 
-  button: {
-
+  requestsContainer: {
+    marginTop: 50,
   },
 });
 

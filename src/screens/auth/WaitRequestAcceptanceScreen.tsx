@@ -10,6 +10,7 @@ import useOrganisationStore from '../../store/OrganisationStore';
 import { User } from 'firebase/auth';
 import { AppUser } from '../../models/User';
 import { RequestStatus } from '../../models/Request';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const WaitRequestAcceptanceScreen = () => {
     const {user, setUser} = useUserStore()
@@ -96,17 +97,19 @@ const WaitRequestAcceptanceScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={typography.title.medium}>{"Your request has been sent!"}</Text>
-            <Text style={typography.body.medium}>{"Waiting to be accepted..."}</Text>
+        <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+            <View style={styles.container}>
+                <Text style={typography.title.medium}>{"Your request has been sent!"}</Text>
+                <Text style={typography.body.medium}>{"Waiting to be accepted..."}</Text>
 
-            { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
-            : (
-                <>
-                    <Button title="Check again" onPress={ checkAgain } />
-                </>
-            )}
-        </View>
+                { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
+                : (
+                    <>
+                        <Button title="Check again" onPress={ checkAgain } />
+                    </>
+                )}
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 
