@@ -5,8 +5,8 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { FIREBASE_AUTH, FIREBASE_DB } from './FirebaseConfig';
 import useUserStore from './src/store/UserStore';
-import { LoginNavigator, OrganisationBifurcationNavigator } from './src/navigation/AuthNavigator';
-import { doc, getDoc, QueryDocumentSnapshot } from "firebase/firestore";
+import { LoginNavigator, OrganisationBifurcationNavigator, WaitRequestAcceptanceNavigator } from './src/navigation/AuthNavigator';
+import { doc, getDoc, getDocs, updateDoc, collection, onSnapshot, query, where, limit, QueryDocumentSnapshot } from "firebase/firestore";
 import { Role, AppUser, defaultUser } from './src/models/User'
 import { Organisation } from './src/models/Organisation';
 import useOrganisationStore from './src/store/OrganisationStore';
@@ -25,7 +25,7 @@ const App = () => {
         const usr = docSnap.data() as AppUser;
         setUser(usr);
         console.log('-> 🙋‍♀️ Current user: ', usr);
-        return usr.organisation
+        return usr.organisationId
       } else {
         console.log('❌ Error fetching user data');
         throw new Error("Could not get User data. Please try again");
@@ -56,14 +56,18 @@ const App = () => {
   }
 
   useEffect(() => {
+    // AUTHENTICATION STATE OBSERVATION
     const handleAuthStateChange = async (currentUser: User) => {
       try {
         if (currentUser && currentUser.emailVerified) {
           const organisationId = await getUserData(currentUser);
+          console.log('-> OrganisationId:', organisationId);
           if (organisationId) {
             await getOrganisationData(organisationId);
+            console.log('-> LogIn success!!');
+          } else {
+            console.log('-> LogIn but no organisation...');
           }
-          console.log('-> LogIn success!!');
         } else {
           console.log('-> User is logged out');
         }
@@ -74,18 +78,26 @@ const App = () => {
 
     const authStateUnsubscribe = onAuthStateChanged(FIREBASE_AUTH, handleAuthStateChange);
 
-    return () => {
-      // Cleanup by unsubscribing from the onAuthStateChanged event
+    return () => { 
       authStateUnsubscribe();
     };
-  }, []); // Empty dependency array to run the effect once on mount
-
+  }, []);
 
   return (
     <NavigationContainer>
-      { user ? (
-        user.organisation ? (
-          <AppNavigator />
+      { user && user.organisationId ? (
+        user.organisationId ? (
+          (user.organisationId === "pending") ? (
+            <Stack.Navigator initialRouteName="WaitRequestAcceptanceScreen">
+              <Stack.Screen name='WaitRequestAcceptanceNavigator' component={WaitRequestAcceptanceNavigator} options={{ headerShown: false }}/>
+            </Stack.Navigator>
+          ) : (user.organisationId === "declined") ? (
+            <Stack.Navigator initialRouteName="Login">
+              <Stack.Screen name='LoginNavigator' component={LoginNavigator}  options={{ headerShown: false }}/>
+            </Stack.Navigator>
+          ) : (
+            <AppNavigator />
+          )
         ) : (
           <Stack.Navigator initialRouteName="OrganisationBifurcationScreen">
             <Stack.Screen name='OrganisationBifurcationNavigator' component={OrganisationBifurcationNavigator} options={{ headerShown: false }}/>

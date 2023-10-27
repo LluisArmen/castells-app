@@ -9,12 +9,26 @@ import { Spacer, VStack } from 'react-native-stacks';
 const AdminScreen = () => {
   const [event, setEvent] = useState('');
 
-  useEffect(() => {}, []);
+  // async function updateOrganisationData(org: Organisation): Promise<void> {
+    //     const updatedOrganisation = org;
+    //     updatedOrganisation.users.push(user.id);
+    //     setOrganisation(updatedOrganisation);
 
-  const addEvent = async () => {
-    const doc = await addDoc(collection(FIREBASE_DB, 'events'), { title: event });
-    setEvent('');
-    console.log('🚀 Successfully added an event!', doc)
+    //     try {
+    //         await updateDoc(doc(FIREBASE_DB, "organisations", organisationId), { 
+    //             users: updatedOrganisation.users,
+    //         })
+    //         console.log("✅ Organisation data has been successfully updated!");
+    //     } catch (error) {
+    //         throw new Error("Could not update Organisation data. Please try again");
+    //     }
+    // }
+    
+  useEffect(() => {}, []);
+      const addEvent = async () => {
+      const doc = await addDoc(collection(FIREBASE_DB, 'events'), { title: event });
+      setEvent('');
+      console.log('🚀 Successfully added an event!', doc)
   };
 
   return (

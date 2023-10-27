@@ -1,11 +1,3 @@
-export interface Request {
-  id?: string;
-  title?: string;
-  email?: string;
-  description?: string;
-  creationDate?: Date;
-}
-
 export interface Organisation {
   id?: string;
   title?: string;
@@ -15,7 +7,6 @@ export interface Organisation {
   owerId?: string;
   admins?: [string];
   users?: [string];
-  requests?: [Request];
 }
 
 export const emptyOrganisation: Organisation = {
@@ -27,5 +18,4 @@ export const emptyOrganisation: Organisation = {
   owerId: null,
   admins: null,
   users: null,
-  requests: null
 };

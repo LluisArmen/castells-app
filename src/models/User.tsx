@@ -10,7 +10,7 @@ export interface AppUser {
     name?: string;
     surname?: string;
     joinDate?: Date;
-    organisation?: string;
+    organisationId?: string;
     role?: Role;
 }
 
@@ -20,7 +20,7 @@ export const defaultUser: AppUser = {
     name: 'Test',
     surname: 'User',
     joinDate: new Date(),
-    organisation: 'My Organisation',
+    organisationId: 'My Organisation',
     role: Role.user,
 };
 
@@ -30,6 +30,6 @@ export const emptyUser: AppUser = {
     name: null,
     surname: null,
     joinDate: null,
-    organisation: null,
+    organisationId: null,
     role: Role.user
 };

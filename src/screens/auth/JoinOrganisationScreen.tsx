@@ -6,7 +6,9 @@ import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { typography } from '../../design/Typography';
 import useUserStore from '../../store/UserStore';
 import { Organisation } from '../../models/Organisation';
+import { RequestStatus, emptyRequest } from '../../models/Request';
 import useOrganisationStore from '../../store/OrganisationStore';
+import { v4 as uuid } from 'uuid';
 
 const JoinOrganisationScreen = () => {
     const {user, setUser} = useUserStore()
@@ -19,13 +21,14 @@ const JoinOrganisationScreen = () => {
             setLoading(true)
             const org = await verifyOrganisationId(organisationId)
             if (org) {
-                await updateOrganisationData(org)
-                await updateUserData(org.id)
+                await sendJoinRequest(org.id)
+                // await updateOrganisationData(org)
+                await updateUserData()
             }
             setLoading(false)
         } catch (error) {
             setLoading(false)
-            console.error("❌ Error: could not join Organisation: ", error);
+            console.error("❌ Error: could send request: ", error);
         }
         
     }
@@ -44,29 +47,37 @@ const JoinOrganisationScreen = () => {
         }
     }
 
-    async function updateOrganisationData(org: Organisation): Promise<void> {
-        const updatedOrganisation = org;
-        updatedOrganisation.users.push(user.id);
-        setOrganisation(updatedOrganisation);
+    async function sendJoinRequest(organisationId: String): Promise<void> {
+        setLoading(true);
+        // create request object
+        const newRequest = emptyRequest;
+        newRequest.id = uuid();
+        newRequest.userId = user.id;
+        newRequest.name = user.name;
+        newRequest.surname = user.surname;
+        newRequest.requestDate = new Date();
+        newRequest.organisationId = organisationId;
+        newRequest.status = RequestStatus.pending;
 
+        // add request to firestore
         try {
-            await updateDoc(doc(FIREBASE_DB, "organisations", organisationId), { 
-                users: updatedOrganisation.users,
-            })
-            console.log("✅ Organisation data has been successfully updated!");
+            await setDoc(doc(FIREBASE_DB, "requests", newRequest.id), newRequest);
+            setLoading(false);
+            console.log("✅ New request has been sent");
         } catch (error) {
-            throw new Error("Could not update Organisation data. Please try again");
+            setLoading(false);
+            throw new Error("Could not create Request. Please try again:", error);
         }
     }
 
-    async function updateUserData(organisationId: string): Promise<void> {
+    async function updateUserData(): Promise<void> {
         try {
             await updateDoc(doc(FIREBASE_DB, "users", user.id), { 
-                organisation: organisationId,
+                organisation: "pending",
             })
-            console.log("✅ User data has been updated!");
+            console.log("⏳ Waiting for acceptance...");
             const updatedUser = user;
-            updatedUser.organisation = organisationId;
+            updatedUser.organisationId = "pending";
             setUser(updatedUser);
         } catch (error) {
             console.error("❌ Error updating user data: ", error);
