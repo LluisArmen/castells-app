@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Alert } from 'react-native';
 import { typography } from '../../design/Typography';
-import { FIREBASE_AUTH } from '../../../FirebaseConfig';
+import { FIREBASE_AUTH, FIREBASE_DB } from '../../../FirebaseConfig';
 import { HStack, Spacer } from 'react-native-stacks';
 import { sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth';
 import { NavigationProp } from '@react-navigation/native';
 import { User } from 'firebase/auth'
+import { doc, getDoc } from "firebase/firestore";
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import useUserStore from '../../store/UserStore';
+import { AppUser } from '../../models/User';
+import { Organisation } from '../../models/Organisation';
+import useOrganisationStore from '../../store/OrganisationStore';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -15,6 +21,8 @@ const LoginScreen = ({ navigation }: RouterProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const {setUser} = useUserStore();
+  const {setOrganisation} = useOrganisationStore();
   const auth = FIREBASE_AUTH;
 
   function validateInputValues() {
@@ -56,29 +64,31 @@ const LoginScreen = ({ navigation }: RouterProps) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.body}>
-        <KeyboardAvoidingView behavior='position'>
-          <HStack style={styles.title}>
-            <Spacer></Spacer>
-            <Text style={typography.title.large}>{"Login"}</Text>
-            <Spacer></Spacer>
-          </HStack>
-          
-          <TextInput value={email} style={styles.textInput} placeholder='Email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
-          <TextInput secureTextEntry={true} value={password} style={styles.textInput} placeholder='Password' autoCapitalize='none' onChangeText={(text) => setPassword(text)}></TextInput>
-          
-          { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
-          : (
-            <>
-              <Button title="Login" onPress={signIn} />
-              <Button title="Create account" onPress={() => navigation.navigate('Register')} />
-            </>
-          )}
+    <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
+      <View style={styles.container}>
+        <View style={styles.body}>
+          <KeyboardAvoidingView behavior='position'>
+            <HStack style={styles.title}>
+              <Spacer></Spacer>
+              <Text style={typography.title.large}>{"Login"}</Text>
+              <Spacer></Spacer>
+            </HStack>
+            
+            <TextInput value={email} style={styles.textInput} placeholder='Email' autoCapitalize='none' onChangeText={(text) => setEmail(text)}></TextInput>
+            <TextInput secureTextEntry={true} value={password} style={styles.textInput} placeholder='Password' autoCapitalize='none' onChangeText={(text) => setPassword(text)}></TextInput>
+            
+            { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
+            : (
+              <>
+                <Button title="Login" onPress={signIn} />
+                <Button title="Create account" onPress={() => navigation.navigate('Register')} />
+              </>
+            )}
 
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
