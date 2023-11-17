@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { HStack, Spacer } from "react-native-stacks";
+import { UserRole } from '../../models/User';
 import useUserStore from '../../store/UserStore';
-import { Role } from '../../models/User';
 
 
 const RoleSwitchComponent = () => {
@@ -10,8 +10,8 @@ const RoleSwitchComponent = () => {
         
   const toggleRole = () => {
     // Toggle the user role between 'Admin' and 'User'
-    const role = user.role === Role.admin ? Role.user : Role.admin;
-    setRole(role)
+    const newRole = user.role === UserRole.Admin ? UserRole.User : UserRole.Admin;
+    setRole(newRole)
   };
 
   return (
@@ -29,8 +29,8 @@ const RoleSwitchComponent = () => {
 //     </View>
 
     <HStack style={styles.container}>
-      <Text style={styles.label}>Is Admin? </Text>
-      <Text style={styles.role}>{user.role === Role.admin ? "YES" : "NO"}</Text>
+      <Text style={styles.label}>Role: </Text>
+      <Text style={styles.role}>{user.role}</Text>
       <Spacer />
       <View>
         <Button title="Toggle Role" onPress={toggleRole} />

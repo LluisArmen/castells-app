@@ -1,35 +1,22 @@
-export enum Role {
-    user = 'USER',
-    admin = 'ADMIN',
-    owner = 'OWNER',
-}
+export const UserRole = {
+    Admin: 'admin',
+    User: 'user',
+};
 
-export interface AppUser {
-    id?: string;
+export interface User {
+    id: string;
     email: string;
-    name?: string;
-    surname?: string;
-    joinDate?: Date;
-    organisationId?: string;
-    role?: Role;
+    name: string;
+    surname: string;
+    organisation: string;
+    role: string;
 }
 
-export const defaultUser: AppUser = {
+export const defaultUser: User = {
     id: '123',
     email: 'test@email.com',
     name: 'Test',
     surname: 'User',
-    joinDate: new Date(),
-    organisationId: 'My Organisation',
-    role: Role.user,
-};
-
-export const emptyUser: AppUser = {
-    id: null,
-    email: null,
-    name: null,
-    surname: null,
-    joinDate: null,
-    organisationId: null,
-    role: Role.user
+    organisation: 'My Organisation',
+    role: UserRole.User
 };
