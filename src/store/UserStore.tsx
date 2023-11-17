@@ -1,14 +1,19 @@
 import { create } from 'zustand'
-import { User, defaultUser } from '../models/User'
+import { Role, AppUser, defaultUser } from '../models/User'
 
 interface UserState {
-  user: User,
-  setRole: (newRole: string) => void
+  user: AppUser,
+  setUser: (newUser: AppUser) => void,
+  setRole: (newRole: Role) => void,
 }
 
 const useUserStore = create<UserState>((set) => ({
-  user: defaultUser,
-  setRole: (newRole: string) => 
+  user: null, //defaultUser
+  setUser: (newUser: AppUser) =>
+    set((state) => ({
+      user: newUser
+    })),
+  setRole: (newRole: Role) => 
     set((state) => ({
       user: {
         ...state.user,
@@ -19,10 +24,6 @@ const useUserStore = create<UserState>((set) => ({
 }))
 
 export default useUserStore
-
-
-
-
 
 
 
