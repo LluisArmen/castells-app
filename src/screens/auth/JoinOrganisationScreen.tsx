@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, Button, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { HStack, Spacer } from 'react-native-stacks';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, or } from "firebase/firestore";
 import { typography } from '../../design/Typography';
 import useUserStore from '../../store/UserStore';
 import { Organisation } from '../../models/Organisation';
@@ -16,6 +16,7 @@ const JoinOrganisationScreen = () => {
     const {setOrganisation} = useOrganisationStore()
     const [organisationId, setOrganisationId] = useState('');
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     async function joinOrganisation() {
         try {
@@ -23,7 +24,6 @@ const JoinOrganisationScreen = () => {
             const org = await verifyOrganisationId(organisationId)
             if (org) {
                 await sendJoinRequest(org.id)
-                // await updateOrganisationData(org)
                 await updateUserData()
             }
             setLoading(false)
@@ -36,6 +36,7 @@ const JoinOrganisationScreen = () => {
 
     async function verifyOrganisationId(organisationId: string) {
         console.log("-> ⏳ Checking...");
+        setErrorMessage("")
         const docRef = doc(FIREBASE_DB, "organisations", organisationId);
         try {
             const docSnap = await getDoc(docRef);
@@ -44,7 +45,8 @@ const JoinOrganisationScreen = () => {
             console.log("✅ Organisation exists: ", org.title);
             return org
         } catch (error) {
-            throw new Error("Organisation does not exist or could not get the data");
+            setErrorMessage("❌ This organisation does not exist");
+            console.error("Organisation does not exist or could not get the data: id:", organisationId);
         }
     }
 
@@ -106,7 +108,9 @@ const JoinOrganisationScreen = () => {
                             <Button title="Join" onPress={ joinOrganisation } />
                             </>
                         )}
-
+                        
+                        <Text style={typography.body.medium}>{errorMessage}</Text>
+                        
                         </KeyboardAvoidingView>
                     </View>
                 </ScrollView>

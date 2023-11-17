@@ -8,6 +8,7 @@ import DevScreen from '../screens/DevScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../store/UserStore';
 import { Role } from '../models/User';
+import { AdminNavigator } from './AdminNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +20,7 @@ const AppNavigator = () => {
       <Tab.Navigator>
           <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
           <Tab.Screen name="Agenda" component={AgendaScreen} options={agendaTabOptions} />
-          <Tab.Screen name="Admin" component={AdminScreen} options={adminTabOptions} />
+          <Tab.Screen name="Admin" component={AdminNavigator} options={adminTabOptions} />
           <Tab.Screen name="Profile" component={ProfileScreen} options={profileTabOptions} />
           <Tab.Screen name="Dev" component={DevScreen} options={devTabOptions} />
       </Tab.Navigator>
@@ -41,7 +42,7 @@ export default AppNavigator;
 
 const homeTabOptions = {
   headerTitle: '',
-  headerShown: true,
+  headerShown: false,
   headerStyle: {
       backgroundColor: 'white',
       shadowColor: 'transparent', // Set the shadow color to transparent
@@ -61,7 +62,7 @@ const homeTabOptions = {
 
 const agendaTabOptions = {
   headerTitle: '',
-  headerShown: true,
+  headerShown: false,
   headerStyle: {
       backgroundColor: 'white',
       shadowColor: 'transparent', // Set the shadow color to transparent
@@ -81,11 +82,11 @@ const agendaTabOptions = {
 
 const adminTabOptions = {
   headerTitle: '',
-  headerShown: true,
+  headerShown: false,
   headerStyle: {
-      backgroundColor: 'white',
-      shadowColor: 'transparent', // Set the shadow color to transparent
-      elevation: 0, // Remove the shadow (Android)
+    backgroundColor: 'white',
+    shadowColor: 'transparent', // Set the shadow color to transparent
+    elevation: 0, // Remove the shadow (Android)
   },
   tabBarIcon: ({ focused, color, size }) => (
     <MaterialIcons 
@@ -101,7 +102,7 @@ const adminTabOptions = {
 
 const profileTabOptions = {
   headerTitle: '',
-  headerShown: true,
+  headerShown: false,
   headerStyle: {
       backgroundColor: 'white',
       shadowColor: 'transparent', // Set the shadow color to transparent
@@ -121,7 +122,7 @@ const profileTabOptions = {
 
 const devTabOptions = {
   headerTitle: '',
-  headerShown: true,
+  headerShown: false,
   headerStyle: {
       backgroundColor: 'white',
       shadowColor: 'transparent', // Set the shadow color to transparent

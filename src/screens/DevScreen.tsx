@@ -13,6 +13,7 @@ const DevScreen = () => {
                 contentContainerStyle={styles.scrollViewContent}
                 showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
             >
+                <Text style={typography.header}>{"Dev"}</Text>
                 {/* Your content goes here */}
                 <Components.RoleSwitchComponent />
                 <Text style={typography.header}>{"Header"}</Text>
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
         minWidth: '100%', 
         paddingLeft: 16,
         paddingRight: 16,
+        paddingTop: 60,
     },
 });
   
