@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Button, TextInput } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Button, TextInput, Modal } from 'react-native';
 import { typography } from '../design/Typography';
 import { FIREBASE_DB } from '../../FirebaseConfig';
-import { addDoc, collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
-import { HStack, Spacer, VStack } from 'react-native-stacks';
+import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import { HStack, Spacer } from 'react-native-stacks';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Organisation } from '../models/Organisation';
 import useOrganisationStore from '../store/OrganisationStore';
 import { RequestStatus } from '../models/Request';
 import { NavigationProp } from '@react-navigation/native';
+import CreateNewEventScreen from './Admin/CreateNewEventScreen';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -16,9 +16,8 @@ interface RouterProps {
 
 const AdminScreen = ({ navigation }: RouterProps) => {
   const {organisation, setOrganisation} = useOrganisationStore();
-  const [event, setEvent] = useState('');
   const [requests, setRequests] = useState<any[]>([]);
-  const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
+  const [showSheet, setShowSheet] = useState(false);
 
   async function respondRequest(requestId: string, userId: string, organisationId: string, status: RequestStatus) {
     await updateUserOrganisationId(userId, organisationId, status)
@@ -66,13 +65,6 @@ const AdminScreen = ({ navigation }: RouterProps) => {
     }
   }
 
-  useEffect(() => {}, []);
-      const addEvent = async () => {
-      const doc = await addDoc(collection(FIREBASE_DB, 'events'), { title: event });
-      setEvent('');
-  };
-  //console.log('📧 You have a new join request')
-
   useEffect(() => {
     const requestRef = collection(FIREBASE_DB, 'requests');
     const subscriber = onSnapshot(requestRef, {
@@ -85,18 +77,6 @@ const AdminScreen = ({ navigation }: RouterProps) => {
           });
         });
         setRequests(newRequests);
-        // // Check if the initial fetch has completed
-        // if (initialFetchCompleted) {
-        //   // Compare the previous requests with the newRequests length
-        //   if (requests.length != newRequests.length) {
-        //     console.log('📧 You have a new join request');
-        //     setRequests(newRequests);
-        //   }
-        // } else {
-        //   // If it's the initial fetch, set the initialFetchCompleted flag to true
-        //   setRequests(newRequests);
-        //   setInitialFetchCompleted(true);
-        // }
       }
     });
 
@@ -107,17 +87,20 @@ const AdminScreen = ({ navigation }: RouterProps) => {
     <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
       <View style={styles.container}>
         <ScrollView
-          // contentContainerStyle={styles.scrollViewContent}
           showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
         >
           <Text style={typography.header}>{"Admin"}</Text>
           <Button title="Mòdul de Pinyes" onPress={() => navigation.navigate('ModulPinyesScreen')} />
   
-          <View style={styles.addEventContainer}>
-            <Text style={typography.body.medium}>{"Create a new Event"}</Text>
-            <TextInput style={styles.inputText} placeholder='Title' onChangeText={(text: string) => setEvent(text)} value={event} />
-            <Button onPress={() => addEvent()} title='Add Event' disabled={event === ''} />
-          </View>
+          <Button title="Events Manager" onPress={() => setShowSheet(true)} />
+          <Modal
+            animationType="slide"
+            presentationStyle='pageSheet'
+            visible={showSheet}
+            onRequestClose={() => { setShowSheet(false);}}
+            >
+              <CreateNewEventScreen closeSheet={setShowSheet}/>
+          </Modal>
 
           <View style={styles.requestsContainer}>
             { requests.map((request) => (
@@ -150,7 +133,15 @@ const styles = StyleSheet.create({
     minWidth: '100%', 
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 60,
+    paddingTop: 100,
+  },
+
+  eventsView: {
+    flex: 1,
+    justifyContent: 'center',
+    minWidth: '100%', 
+    paddingLeft: 24,
+    paddingRight: 24,
   },
 
   addEventContainer: {

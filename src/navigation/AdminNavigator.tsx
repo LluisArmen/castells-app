@@ -20,7 +20,7 @@ const modulPinyesScreenOptions = {
     headerShown: true,
     headerStyle: {
         backgroundColor: 'white',
-        shadowColor: 'transparent', // Set the shadow color to transparent
+        shadowColor: 'transparent',
         elevation: 0, // Remove the shadow (Android)
     }
 };

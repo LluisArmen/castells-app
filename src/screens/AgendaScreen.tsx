@@ -4,6 +4,8 @@ import { typography } from '../design/Typography';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { HStack, Spacer, VStack } from 'react-native-stacks';
+import EventComponent from './Agenda/EventComponent';
 
 const AgendaScreen = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -52,7 +54,7 @@ const AgendaScreen = () => {
 
           <View style={styles.eventsContainer}>
             { events.map((event) => (
-              <Text key={event.id} style={typography.body.small}>{event.title}</Text>
+              <EventComponent key={event.id} event={event}/>
             ))}
           </View>
         </ScrollView>
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
       minWidth: '100%',
       paddingLeft: 16,
       paddingRight: 16,
-      paddingTop: 60,
+      paddingTop: 100,
   },
 
   eventsContainer: {
