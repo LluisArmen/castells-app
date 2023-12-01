@@ -13,7 +13,8 @@ const AgendaScreen = () => {
 
   useEffect(() => {
     const eventRef = collection(FIREBASE_DB, 'events');
-
+    let unsubscribe = null;
+    
     const subscriber = onSnapshot(eventRef, {
       next: (snapshot) => {
         const newEvents = [];

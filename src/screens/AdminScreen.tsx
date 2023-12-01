@@ -81,7 +81,7 @@ const AdminScreen = ({ navigation }: RouterProps) => {
     });
 
     return () => subscriber();
-  }, [requests]);
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
