@@ -15,55 +15,8 @@ interface RouterProps {
 }
 
 const AdminScreen = ({ navigation }: RouterProps) => {
-  const {organisation, setOrganisation} = useOrganisationStore();
-  const [requests, setRequests] = useState<any[]>([]);
+  const [requestsCount, setRequestsCount] = useState(0);
   const [showSheet, setShowSheet] = useState(false);
-
-  async function respondRequest(requestId: string, userId: string, organisationId: string, status: RequestStatus) {
-    await updateUserOrganisationId(userId, organisationId, status)
-    await updateRequestData(requestId, status)
-    await updateOrganisationData(userId, organisationId)
-  }
-
-  // Update request status
-  async function updateUserOrganisationId(userId: string, organisationId: string, newStatus: RequestStatus): Promise<void> {
-    try {
-      const newOrganisationId = newStatus === "accepted" ? organisationId : newStatus
-      await updateDoc(doc(FIREBASE_DB, "users", userId), { 
-          organisationId: newOrganisationId,
-      })
-      console.log("✅ User organisation ID has been successfully updated");
-    } catch (error) {
-        throw new Error("Could not update User organisation ID. Please try again");
-    }
-  }
-
-  // Update request status
-  async function updateRequestData(requestId: string, newStatus: RequestStatus): Promise<void> {
-    try {
-        await updateDoc(doc(FIREBASE_DB, "requests", requestId), { 
-            status: newStatus,
-        })
-        console.log("✅ Request status has been successfully updated");
-    } catch (error) {
-        throw new Error("Could not update Request status. Please try again");
-    }
-  }
-
-  // Update organisation: add new user id to array of users
-  async function updateOrganisationData(userId: string, organisationId: string): Promise<void> {
-    const updatedOrganisation = organisation;
-    updatedOrganisation.users.push(userId);
-    try {
-        await updateDoc(doc(FIREBASE_DB, "organisations", organisationId), { 
-            users: updatedOrganisation.users,
-        })
-        setOrganisation(updatedOrganisation);
-        console.log("✅ Organisation data has been successfully updated");
-    } catch (error) {
-        throw new Error("Could not update Organisation data. Please try again");
-    }
-  }
 
   useEffect(() => {
     const requestRef = collection(FIREBASE_DB, 'requests');
@@ -76,7 +29,8 @@ const AdminScreen = ({ navigation }: RouterProps) => {
             ...doc.data()
           });
         });
-        setRequests(newRequests);
+        const pendingRequests = newRequests.filter(request => request.status === 'pending');
+        setRequestsCount(pendingRequests.length);
       }
     });
 
@@ -102,17 +56,7 @@ const AdminScreen = ({ navigation }: RouterProps) => {
               <CreateNewEventScreen closeSheet={setShowSheet}/>
           </Modal>
 
-          <View style={styles.requestsContainer}>
-            { requests.map((request) => (
-              <HStack key={request.id}>
-                <Text style={typography.body.small}>{request.name}</Text>
-                <Spacer></Spacer>
-                <Text style={typography.body.small}>{request.status}</Text>
-                <Button onPress={() => respondRequest(request.id, request.userId, organisation.id, RequestStatus.accepted)} title='Accept' />
-                <Button onPress={() => respondRequest(request.id, request.userId, organisation.id, RequestStatus.declined)} title='Decline' />
-              </HStack>
-            ))}
-          </View>
+          <Button title={`Join requests (${requestsCount})`} onPress={() => navigation.navigate('JoinRequestsScreen')} />
 
         </ScrollView>
       </View>
@@ -155,10 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 16,
     backgroundColor: 'white',
-  },
-
-  requestsContainer: {
-    marginTop: 50,
   },
 });
 
