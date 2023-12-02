@@ -131,8 +131,6 @@ const CreateNewEventScreen = ({ closeSheet }) => {
     setEventStartDateString(eventStartDateTime.toDateString());
     // Set new min end time for time picker
     setEventMinimumEndDateTime(eventStartDateTime);
-    console.log("START:", eventStartDateTime)
-    console.log("END:", eventEndDateTime)
     if (eventStartDateTime > eventEndDateTime) {
       setEventEndDateTime(eventStartDateTime);
       setEventEndDateString("");

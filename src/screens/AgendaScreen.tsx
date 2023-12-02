@@ -6,6 +6,7 @@ import { FIREBASE_DB } from '../../FirebaseConfig';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { HStack, Spacer, VStack } from 'react-native-stacks';
 import EventComponent from './Agenda/EventComponent';
+import { Event } from '../models/Event';
 
 const AgendaScreen = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -13,7 +14,6 @@ const AgendaScreen = () => {
 
   useEffect(() => {
     const eventRef = collection(FIREBASE_DB, 'events');
-    let unsubscribe = null;
     
     const subscriber = onSnapshot(eventRef, {
       next: (snapshot) => {
@@ -49,7 +49,7 @@ const AgendaScreen = () => {
       <View style={styles.container}>
         <ScrollView
             contentContainerStyle={styles.scrollViewContent}
-            showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
+            showsVerticalScrollIndicator={false}
         >
           <Text style={typography.header}>{"Agenda"}</Text>
 
