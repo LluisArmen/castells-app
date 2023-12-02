@@ -37,39 +37,39 @@ const CreateNewEventScreen = ({ closeSheet }) => {
 
   useEffect(() => {}, []);
       const addEvent = async () => {
-      const doc = await addDoc(collection(FIREBASE_DB, 'events'), { 
-        title: eventTitle,
-        description: eventDescription,
-        start_date: eventStartDateTime,
-        end_date: eventEndDateTime,
-        location: eventLocation,
-        attendance: {
-          positive: {
-            title: positiveReponse,
-            list: [],
-            count: 0
-          },
-          negative: {
-            title: negativeResponse,
-            list: [],
-            count: 0
-          },
-          optional: {
-            title: optionalResponse,
-            list: [],
-            count: 0
+        const doc = await addDoc(collection(FIREBASE_DB, 'events'), { 
+          title: eventTitle,
+          description: eventDescription,
+          start_date: eventStartDateTime,
+          end_date: eventEndDateTime,
+          location: eventLocation,
+          attendance: {
+            positive: {
+              title: positiveReponse,
+              list: [],
+              count: 0
+            },
+            negative: {
+              title: negativeResponse,
+              list: [],
+              count: 0
+            },
+            optional: {
+              title: optionalResponse,
+              list: [],
+              count: 0
+            }
           }
-        }
-      });
-      setEventTitle('');
-      setEventDescription('');
-      setEventStartDateTime(new Date());
-      setEventEndDateTime(new Date());
-      setEventLocation('');
-      setPositiveReponse('');
-      setNegativeResponse('');
-      setOptionalResponse('');
-      closeSheet(false);
+        });
+        setEventTitle('');
+        setEventDescription('');
+        setEventStartDateTime(new Date());
+        setEventEndDateTime(new Date());
+        setEventLocation('');
+        setPositiveReponse('');
+        setNegativeResponse('');
+        setOptionalResponse('');
+        closeSheet(false);
   };
 
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);

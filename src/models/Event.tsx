@@ -19,3 +19,9 @@ export interface AttendanceResponse {
     count?: number;
     list?: [string];
 }
+
+export enum AttendanceType {
+    positive = 'positive',
+    negative = 'negative',
+    optional = 'optional',
+}

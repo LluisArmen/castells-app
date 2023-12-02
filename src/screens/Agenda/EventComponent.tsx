@@ -3,10 +3,14 @@ import { Button, View, Text, TextInput, StyleSheet, ScrollView } from 'react-nat
 import { typography } from '../../design/Typography';
 import { HStack, Spacer, VStack } from 'react-native-stacks';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
-import { addDoc, collection } from 'firebase/firestore';
-import { Event } from '../../models/Event';
+import { updateDoc, doc } from 'firebase/firestore';
+import useUserStore from '../../store/UserStore';
+import { AttendanceType } from '../../models/Event';
 
 const EventComponent = ({ event }) => {
+    const {user, setUser} = useUserStore()
+    const [updatedEvent, setUpdatedEvent] = useState(event);
+
     const startDate: Date = new Date(event.start_date.seconds * 1000);
     const endDate: Date = new Date(event.end_date.seconds * 1000);
 
@@ -33,6 +37,72 @@ const EventComponent = ({ event }) => {
 
     const { durationHours, durationMinutes } = getDuration(startDate, endDate);
 
+    const userHasResponded = (attendanceList: [string]) => {
+        return attendanceList.includes(user.id)
+    }
+
+    const optionClicked = () => {
+        if (updatedEvent.attendance.positive.list.includes(user.id)) {
+            return AttendanceType.positive
+        } else if (updatedEvent.attendance.negative.list.includes(user.id)) {
+            return AttendanceType.negative
+        } else if (updatedEvent.attendance.optional.list.includes(user.id)) {
+            return AttendanceType.optional
+        } else {
+            return null
+        }
+    }
+
+    const handleAttendance = async (type: AttendanceType) => {
+        if (userHasResponded(updatedEvent.attendance.positive.list) || 
+            userHasResponded(updatedEvent.attendance.negative.list) ||
+            userHasResponded(updatedEvent.attendance.optional.list)) {
+            console.log('User has already responded...');
+            return;
+        }
+
+        switch(type) {
+            case AttendanceType.positive:
+                if (!userHasResponded(updatedEvent.attendance.positive.list)) {
+                    updatedEvent.attendance.positive.count += 1;
+                    updatedEvent.attendance.positive.list.push(user.id);
+                }
+                break;
+               
+            case AttendanceType.negative:
+                if (!userHasResponded(updatedEvent.attendance.negative.list)) {
+                    updatedEvent.attendance.negative.count += 1;
+                    updatedEvent.attendance.negative.list.push(user.id);
+                }
+                break;
+          
+            case AttendanceType.optional:
+                if (!userHasResponded(updatedEvent.attendance.optional.list)) {
+                    updatedEvent.attendance.optional.count += 1;
+                    updatedEvent.attendance.optional.list.push(user.id);
+                }
+                break;
+        }
+
+        await updateEvent();
+        await updateEventInFirestore();
+    };
+
+    const updateEvent = async () => {
+        setUpdatedEvent(updatedEvent);
+    }
+
+    const updateEventInFirestore = async () => {
+        try {
+          const eventDocRef = doc(FIREBASE_DB, 'events', updatedEvent.id);
+      
+          // Update the document with the modified event data
+          await updateDoc(eventDocRef, updatedEvent);
+          console.log('✅ Event updated successfully in Firestore!');
+        } catch (error) {
+          console.error('❌ Error updating event in Firestore:', error);
+        }
+    };
     
     return (
         <View style={styles.container}>
@@ -83,17 +153,31 @@ const EventComponent = ({ event }) => {
                         </HStack>
                     </View>
                 )}
-                
+
                 <HStack style={{paddingTop: 10}}>
-                    <Text style={[typography.body.small, {fontWeight: "bold"}]}>{event.attendance.positive.title}</Text>
+                    <View style={[
+                        styles.buttonContainer, 
+                        optionClicked() == AttendanceType.positive ? { backgroundColor: 'gray'} : null]}
+                    >
+                        <Button title={updatedEvent.attendance.positive.title} onPress={() => handleAttendance(AttendanceType.positive)} color='black' />
+                    </View>
                     <Spacer/>
-                    <Text style={[typography.body.small, {fontWeight: "bold"}]}>{event.attendance.negative.title}</Text>
+
+                    <View style={[
+                        styles.buttonContainer, 
+                        optionClicked() == AttendanceType.negative ? { backgroundColor: 'gray' } : null]}
+                    >
+                        <Button title={updatedEvent.attendance.negative.title} onPress={() => handleAttendance(AttendanceType.negative)} color='black' />
+                    </View>
+
                     <Spacer/>
-                    {event.attendance.optional.title ? (
-                        <Text style={[typography.body.small, {fontWeight: "bold"}]}>{event.attendance.optional.title}</Text>
-                    ) : (
-                        <Spacer/>
-                    )}
+
+                    <View style={[
+                        styles.buttonContainer, 
+                        optionClicked() == AttendanceType.optional ? { backgroundColor: 'gray' } : null]}
+                    >
+                        <Button title={updatedEvent.attendance.optional.title} onPress={() => handleAttendance(AttendanceType.optional)} color='black' />
+                    </View>
                 </HStack>
             </VStack>
         </View>
@@ -116,6 +200,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         minWidth: '100%',
     },
+
+    buttonContainer: {
+        borderWidth: 0.5,
+        borderColor: 'black',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+    }
   });
 
 export default EventComponent;
