@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { Button, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { typography } from '../../design/Typography';
-import { HStack, Spacer, VStack } from 'react-native-stacks';
+import { HStack, Spacer, VStack, ZStack } from 'react-native-stacks';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 import useUserStore from '../../store/UserStore';
 import { AttendanceType } from '../../models/Event';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Event } from '../../models/Event';
 
-const EventComponent = ({ event }) => {
+const EventComponent = ({ event, navigation }) => {
     const {user, setUser} = useUserStore()
     const [updatedEvent, setUpdatedEvent] = useState(event);
+
+    interface UserData {
+        id: string;
+        name: string;
+    }
 
     const startDate: Date = new Date(event.start_date.seconds * 1000);
     const endDate: Date = new Date(event.end_date.seconds * 1000);
@@ -19,6 +26,11 @@ const EventComponent = ({ event }) => {
 
     const endDateHours = endDate.getHours().toString().padStart(2, '0');
     const endDateMinutes = endDate.getMinutes().toString().padStart(2, '0');
+
+    const navigateToEventScreen = () => {
+        navigation.navigate('EventScreen', { event: event as Event });
+        navigation.setParams({headerTitle: "aaa"})
+    };
 
     const isSameDay = (startDate: Date, endDate: Date) => {
         return (startDate.getDay() == endDate.getDay())
@@ -37,16 +49,16 @@ const EventComponent = ({ event }) => {
 
     const { durationHours, durationMinutes } = getDuration(startDate, endDate);
 
-    const userHasResponded = (attendanceList: [string]) => {
-        return attendanceList.includes(user.id)
+    const userHasResponded = (attendanceList: [any]) => {
+        return attendanceList.some((userData: UserData) => userData.id === user.id)
     }
 
     const optionClicked = () => {
-        if (updatedEvent.attendance.positive.list.includes(user.id)) {
+        if (updatedEvent.attendance.positive.list.some((userData) => userData.id === user.id)) {
             return AttendanceType.positive
-        } else if (updatedEvent.attendance.negative.list.includes(user.id)) {
+        } else if (updatedEvent.attendance.negative.list.some(userData => userData.id === user.id)) {
             return AttendanceType.negative
-        } else if (updatedEvent.attendance.optional.list.includes(user.id)) {
+        } else if (updatedEvent.attendance.optional.list.some(userData => userData.id === user.id)) {
             return AttendanceType.optional
         } else {
             return null
@@ -65,21 +77,33 @@ const EventComponent = ({ event }) => {
             case AttendanceType.positive:
                 if (!userHasResponded(updatedEvent.attendance.positive.list)) {
                     updatedEvent.attendance.positive.count += 1;
-                    updatedEvent.attendance.positive.list.push(user.id);
+                    const userData: UserData = {
+                        id: user.id,
+                        name: (user.name + " " + user.surname)
+                    }
+                    updatedEvent.attendance.positive.list.push(userData);
                 }
                 break;
                
             case AttendanceType.negative:
                 if (!userHasResponded(updatedEvent.attendance.negative.list)) {
                     updatedEvent.attendance.negative.count += 1;
-                    updatedEvent.attendance.negative.list.push(user.id);
+                    const userData: UserData = {
+                        id: user.id,
+                        name: (user.name + " " + user.surname)
+                    }
+                    updatedEvent.attendance.negative.list.push(userData);
                 }
                 break;
           
             case AttendanceType.optional:
                 if (!userHasResponded(updatedEvent.attendance.optional.list)) {
                     updatedEvent.attendance.optional.count += 1;
-                    updatedEvent.attendance.optional.list.push(user.id);
+                    const userData: UserData = {
+                        id: user.id,
+                        name: (user.name + " " + user.surname)
+                    }
+                    updatedEvent.attendance.optional.list.push(userData);
                 }
                 break;
         }
@@ -105,9 +129,18 @@ const EventComponent = ({ event }) => {
     };
     
     return (
-        <View style={styles.container}>
+        <View style={styles.container}>           
             <VStack style={{alignItems: 'flex-start'}}>
-                <Text style={[typography.body.medium, {fontWeight: "bold"}]}>{event.title}</Text>
+                <HStack>
+                    <Text style={[typography.body.medium, {fontWeight: "bold"}]}>{event.title}</Text>
+                    <Spacer/>
+                    <TouchableOpacity onPress={navigateToEventScreen}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: -10 }}>
+                            <MaterialIcons name="chevron-right" size={24} color="black" />
+                        </View>
+                    </TouchableOpacity>
+                </HStack>
+                
                 <Text style={typography.body.small}>{event.description}</Text>
                 <Text style={typography.body.small}>{event.location}</Text>
 
@@ -192,8 +225,8 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         minWidth: '100%', 
-        paddingLeft: 24,
-        paddingRight: 24,
+        paddingLeft: 16,
+        paddingRight: 16,
     },
 
     dateContainer: {

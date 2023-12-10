@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { Button, View, Text, TextInput, StyleSheet, ScrollView, Platform } from 'react-native';
 import { typography } from '../../design/Typography';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
@@ -202,7 +202,7 @@ const CreateNewEventScreen = ({ closeSheet }) => {
                 </HStack>
 
 
-                { showStartDatePicker && (
+                { showStartDatePicker && Platform.OS == "ios" && (
                   <VStack>
                     <DateTimePicker
                       mode='date'
@@ -231,7 +231,7 @@ const CreateNewEventScreen = ({ closeSheet }) => {
                   </VStack>
                 )}
 
-                { showStartTimePicker && (
+                { showStartTimePicker && Platform.OS == "ios" && (
                   <VStack>
                     <DateTimePicker
                       mode='time'

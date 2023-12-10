@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Button } from 'react-native';
 import { typography } from '../design/Typography';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { FIREBASE_DB } from '../../FirebaseConfig';
@@ -7,8 +7,13 @@ import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { HStack, Spacer, VStack } from 'react-native-stacks';
 import EventComponent from './Agenda/EventComponent';
 import { Event } from '../models/Event';
+import { NavigationProp } from '@react-navigation/native';
 
-const AgendaScreen = () => {
+interface RouterProps {
+  navigation: NavigationProp<any, any>;
+}
+
+const AgendaScreen = ({ navigation }: RouterProps) => {
   const [events, setEvents] = useState<any[]>([]);
   const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
 
@@ -55,7 +60,7 @@ const AgendaScreen = () => {
 
           <View style={styles.eventsContainer}>
             { events.map((event) => (
-              <EventComponent key={event.id} event={event}/>
+              <EventComponent key={event.id} event={event} navigation={navigation}/>
             ))}
           </View>
         </ScrollView>

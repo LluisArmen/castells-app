@@ -8,7 +8,7 @@ export const primaryFont = Platform.select({
 
 export const typography = {
     header: {
-      fontFamily: 'Helvetica',
+      fontFamily: primaryFont,
       fontSize: 32,
       fontWeight: 'bold' as 'bold',
     },

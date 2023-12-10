@@ -9,32 +9,28 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../store/UserStore';
 import { Role } from '../models/User';
 import { AdminNavigator } from './AdminNavigator';
+import { AgendaNavigator } from './AgendaNavigator';
 
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   const {user} = useUserStore()
+    return (
+      <Tab.Navigator>
+          <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
+          <Tab.Screen name="Agenda" component={AgendaNavigator} options={agendaTabOptions} />
 
-  if (user.role === Role.admin || user.role === Role.owner) {
-    return (
-      <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
-          <Tab.Screen name="Agenda" component={AgendaScreen} options={agendaTabOptions} />
-          <Tab.Screen name="Admin" component={AdminNavigator} options={adminTabOptions} />
+          {(user.role === Role.admin || user.role === Role.owner) && (
+            <Tab.Screen name="Admin" component={AdminNavigator} options={adminTabOptions} />
+          )}
+          
           <Tab.Screen name="Profile" component={ProfileScreen} options={profileTabOptions} />
-          <Tab.Screen name="Dev" component={DevScreen} options={devTabOptions} />
+
+          {user.role === Role.owner && (
+            <Tab.Screen name="Dev" component={DevScreen} options={devTabOptions} />
+          )}
       </Tab.Navigator>
     );
-  } else {
-    return (
-      <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
-          <Tab.Screen name="Agenda" component={AgendaScreen} options={agendaTabOptions} />
-          <Tab.Screen name="Profile" component={ProfileScreen} options={profileTabOptions} />
-          <Tab.Screen name="Dev" component={DevScreen} options={devTabOptions} />
-      </Tab.Navigator>
-    );
-  }
 };
 
 export default AppNavigator;
