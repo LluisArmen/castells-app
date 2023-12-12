@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Button } from 'react-native';
 import { typography } from '../design/Typography';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { HStack, Spacer, VStack } from 'react-native-stacks';
+import EventComponent from './Agenda/EventComponent';
+import { Event } from '../models/Event';
+import { NavigationProp } from '@react-navigation/native';
 
-const AgendaScreen = () => {
+interface RouterProps {
+  navigation: NavigationProp<any, any>;
+}
+
+const AgendaScreen = ({ navigation }: RouterProps) => {
   const [events, setEvents] = useState<any[]>([]);
   const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
 
   useEffect(() => {
     const eventRef = collection(FIREBASE_DB, 'events');
-
+    
     const subscriber = onSnapshot(eventRef, {
       next: (snapshot) => {
         const newEvents = [];
@@ -46,13 +54,13 @@ const AgendaScreen = () => {
       <View style={styles.container}>
         <ScrollView
             contentContainerStyle={styles.scrollViewContent}
-            showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
+            showsVerticalScrollIndicator={false}
         >
           <Text style={typography.header}>{"Agenda"}</Text>
 
           <View style={styles.eventsContainer}>
             { events.map((event) => (
-              <Text key={event.id} style={typography.body.small}>{event.title}</Text>
+              <EventComponent key={event.id} event={event} navigation={navigation}/>
             ))}
           </View>
         </ScrollView>
@@ -74,7 +82,7 @@ const styles = StyleSheet.create({
       minWidth: '100%',
       paddingLeft: 16,
       paddingRight: 16,
-      paddingTop: 60,
+      paddingTop: 100,
   },
 
   eventsContainer: {

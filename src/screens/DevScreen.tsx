@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         minWidth: '100%', 
         paddingLeft: 16,
         paddingRight: 16,
-        paddingTop: 60,
+        paddingTop: 100,
     },
 });
   

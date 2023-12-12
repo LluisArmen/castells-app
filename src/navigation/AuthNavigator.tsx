@@ -1,11 +1,11 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import LoginScreen from '../screens/auth/LoginScreen';
-import RegistrationScreen from '../screens/auth/RegistrationScreen';
-import OrganisationBifurcationScreen from '../screens/auth/OrganisationBifurcationScreen';
-import CreateOrganisationScreen from '../screens/auth/CreateOrganisationScreen';
-import JoinOrganisationScreen from '../screens/auth/JoinOrganisationScreen';
-import WaitRequestAcceptanceScreen from '../screens/auth/WaitRequestAcceptanceScreen';
+import LoginScreen from '../screens/Auth/LoginScreen';
+import RegistrationScreen from '../screens/Auth/RegistrationScreen';
+import OrganisationBifurcationScreen from '../screens/Auth/OrganisationBifurcationScreen';
+import CreateOrganisationScreen from '../screens/Auth/CreateOrganisationScreen';
+import JoinOrganisationScreen from '../screens/Auth/JoinOrganisationScreen';
+import WaitRequestAcceptanceScreen from '../screens/Auth/WaitRequestAcceptanceScreen';
 
 const Stack = createNativeStackNavigator();
 
