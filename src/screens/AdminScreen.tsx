@@ -58,6 +58,8 @@ const AdminScreen = ({ navigation }: RouterProps) => {
 
           <Button title={`Join requests (${requestsCount})`} onPress={() => navigation.navigate('JoinRequestsScreen')} />
 
+          <Button title="Roles Manager" onPress={() => navigation.navigate('RolesManagerScreen', { navigation: navigation as NavigationProp<any, any> })} />
+
         </ScrollView>
       </View>
     </TouchableWithoutFeedback>
