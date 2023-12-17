@@ -9,6 +9,7 @@ import useOrganisationStore from '../store/OrganisationStore';
 import { RequestStatus } from '../models/Request';
 import { NavigationProp } from '@react-navigation/native';
 import CreateNewEventScreen from './Admin/CreateNewEventScreen';
+import ModulPinyesScreen from './Admin/ModulPinyesScreen';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -16,7 +17,8 @@ interface RouterProps {
 
 const AdminScreen = ({ navigation }: RouterProps) => {
   const [requestsCount, setRequestsCount] = useState(0);
-  const [showSheet, setShowSheet] = useState(false);
+  const [showEventsManager, setShowEventsManager] = useState(false);
+  const [showModulPinyes, setShowModulPinyes] = useState(false);
 
   useEffect(() => {
     const requestRef = collection(FIREBASE_DB, 'requests');
@@ -44,16 +46,25 @@ const AdminScreen = ({ navigation }: RouterProps) => {
           showsVerticalScrollIndicator={false} // Optional: Hide the vertical scroll indicator  
         >
           <Text style={typography.header}>{"Admin"}</Text>
-          <Button title="Mòdul de Pinyes" onPress={() => navigation.navigate('ModulPinyesScreen')} />
-  
-          <Button title="Events Manager" onPress={() => setShowSheet(true)} />
+          {/* <Button title="Mòdul de Pinyes" onPress={() => navigation.navigate('ModulPinyesScreen')} /> */}
+          <Button title="Mòdul de Pinyesr" onPress={() => setShowModulPinyes(true)} />
+          <Modal
+            animationType='slide'
+            presentationStyle='overFullScreen'
+            visible={showModulPinyes}
+            onRequestClose={() => { setShowModulPinyes(false);}}
+            >
+              <ModulPinyesScreen showSheet={setShowModulPinyes}/>
+          </Modal>
+
+          <Button title="Events Manager" onPress={() => setShowEventsManager(true)} />
           <Modal
             animationType="slide"
             presentationStyle='pageSheet'
-            visible={showSheet}
-            onRequestClose={() => { setShowSheet(false);}}
+            visible={showEventsManager}
+            onRequestClose={() => { setShowEventsManager(false);}}
             >
-              <CreateNewEventScreen closeSheet={setShowSheet}/>
+              <CreateNewEventScreen closeSheet={setShowEventsManager}/>
           </Modal>
 
           <Button title={`Join requests (${requestsCount})`} onPress={() => navigation.navigate('JoinRequestsScreen')} />

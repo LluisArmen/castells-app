@@ -1,6 +1,8 @@
-import React from "react";
-import { View, Text, TouchableWithoutFeedback, Keyboard, ScrollView, StyleSheet, Dimensions } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, TouchableWithoutFeedback, Keyboard, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { Path, Svg } from "react-native-svg";
+import { AppUser } from "../../models/User";
+import { HStack, Spacer, VStack } from "react-native-stacks";
 
 const MARGIN = 10;
 const viewBoxWidth = 559 + MARGIN;
@@ -14,7 +16,13 @@ const paths = [
     "M0 54H138V242H0V54Z",
 ]
 
-const ModulPinyesScreen = () => {
+const ModulPinyesScreen = ({ showSheet }) => {
+
+    const testUsers = ["Lluis Armengol",
+                       "Marta Marimon",
+                       "Rosa Lleida",
+                       "Alba Castells",
+                       "Oriol Pasies"];
 
     function handleBoxPress(id: number) {
         console.log('Box tapped with id:', id);
@@ -23,7 +31,13 @@ const ModulPinyesScreen = () => {
     return (
         <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
             <View style={styles.container}>
-    
+                <HStack>
+                    <VStack>
+                        <TouchableOpacity onPress={() => showSheet(false)}>
+                            <Text>Close</Text>
+                        </TouchableOpacity>
+                        <Spacer/>
+                    </VStack>
                     <View style={styles.layer}>
                         <Svg 
                             width={width} 
@@ -43,8 +57,7 @@ const ModulPinyesScreen = () => {
                             ))}
                         </Svg>
                     </View>
-
-               
+                </HStack>
             </View>
         </TouchableWithoutFeedback>
     );
