@@ -54,19 +54,15 @@ const ModulPinyesScreen = ({ showSheet }) => {
         setStateUserListBox(updatedTestUsersBox);
         setSelectedUser('')
         setSelectedBox(null)
-        console.debug(stateUserListBox);
     }
 
     function isUserAssigned(id: number) {
-        console.debug("Box:", id)
-        console.debug("Is user assigned:", Object.values(stateUserListBox).includes(id))
         return Object.values(stateUserListBox).includes(id);
     }
 
     function getNameForNumber(id: number) {
         for (const [name, value] of Object.entries(stateUserListBox)) {
           if (value === id) {
-            console.debug("Name:", name)
             return name;
           }
         }
@@ -76,16 +72,14 @@ const ModulPinyesScreen = ({ showSheet }) => {
     function isStartPointOnLeft(path: string) {
         const properties = new PathProperties.svgPathProperties(path);
         const x = properties.getPointAtLength(properties.getTotalLength());
-        const screenWidth = viewBoxWidth/2 //Dimensions.get('window').width / 2;
-        //console.debug('screenWidth:', screenWidth);
+        const screenWidth = viewBoxWidth/2;
         return x.x < screenWidth;
     }
 
     function isStartPointOnTop(path: string) {
         const properties = new PathProperties.svgPathProperties(path);
         const y = properties.getPointAtLength(properties.getTotalLength());
-        const screenHeight = viewBoxHeight/2 //Dimensions.get('window').width / 2;
-        //console.debug('screenHeight:', screenHeight);
+        const screenHeight = viewBoxHeight/2;
         return y.y < screenHeight;
     }
 
@@ -94,12 +88,10 @@ const ModulPinyesScreen = ({ showSheet }) => {
         const left = properties.getPointAtLength(properties.getTotalLength());
         const right = properties.getPointAtLength(properties.getTotalLength()/2);
         const width = (right.x - left.x)
-        //console.debug('width:', width);
     
         const top = properties.getPointAtLength(properties.getTotalLength());
         const bottom = properties.getPointAtLength(properties.getTotalLength()/2);
         const height = (bottom.y - top.y)
-        //console.debug('height:', height);
 
         if (width > height) {
             return 0;
@@ -132,10 +124,10 @@ const ModulPinyesScreen = ({ showSheet }) => {
         const properties = new PathProperties.svgPathProperties(pathString);
         const left = properties.getPointAtLength(properties.getTotalLength());
         const right = properties.getPointAtLength(properties.getTotalLength()/2);
-        const center = (left.x + right.x)/2
+        const center = (left.x + right.x)/2;
         const textWidth = name ? name.length * (9/2) : 0;
         //onsole.debug('Text lenght:', textWidth);
-        const x = center - (isRotation ? 0 : textWidth)
+        const x = center - (isRotation ? 0 : textWidth);
   
         return x;
     }
@@ -144,19 +136,21 @@ const ModulPinyesScreen = ({ showSheet }) => {
         const properties = new PathProperties.svgPathProperties(pathString);
         const top = properties.getPointAtLength(properties.getTotalLength());
         const bottom = properties.getPointAtLength(properties.getTotalLength()/2);
-        const center = (top.y + bottom.y)/2
+        const center = (top.y + bottom.y)/2;
         const textHeight = 9;
-        const y = center + (isRotation ? 0 : textHeight)
+        const y = center + (isRotation ? 0 : textHeight);
         return y
     }
 
-    function handleBoxPress(id: number, path: string) {
-        console.log('Box tapped with id:', id);
-        setSelectedBox(id)
+    function handleBoxPress(id: number) {
+        if (selectedBox == id) {
+            setSelectedBox(null);
+        } else {
+            setSelectedBox(id);
+        }
     }
 
     function handleUserPress(name: string) {
-        console.log('User tapped:', name);
         if (selectedUser == name) {
             setSelectedUser('');
         } else {
@@ -172,11 +166,11 @@ const ModulPinyesScreen = ({ showSheet }) => {
                         <Text>Close</Text>
                     </TouchableOpacity>
                     <Spacer/>
-                    {(selectedUser != '' && selectedBox) && (
+                    {(selectedUser != "" && selectedBox != null) && (
                         <TouchableOpacity onPress={() => setUserToBox()} style={{marginBottom: 30}}>
-                            <Text>Confirm</Text>
+                                <Text>Confirm</Text>
                         </TouchableOpacity>
-                    )}
+                    )} 
                 </HStack>
             
             
@@ -195,7 +189,7 @@ const ModulPinyesScreen = ({ showSheet }) => {
                                 <Path 
                                     d={path}  
                                     key={index}
-                                    onPress={() => handleBoxPress(index, path)}
+                                    onPress={() => handleBoxPress(index)}
                                     fill={index === selectedBox ? "#b2d8d8" : "#FEFEFE"}
                                     stroke="black" 
                                     strokeWidth={index === selectedBox ? 4 : 1}
@@ -231,7 +225,7 @@ const ModulPinyesScreen = ({ showSheet }) => {
                                 <Path 
                                     d={path}  
                                     key={index+paths.length}
-                                    onPress={() => handleBoxPress(index+paths.length, path)}
+                                    onPress={() => handleBoxPress(index+paths.length)}
                                     fill={index+paths.length === selectedBox ? "#b2d8d8" : "#FEFEFE"}
                                     stroke="black" 
                                     strokeWidth={index+paths.length === selectedBox ? 4 : 1}
@@ -248,15 +242,6 @@ const ModulPinyesScreen = ({ showSheet }) => {
                                         </SvgText>
                                     </G>
                                 )}
-                                {/* {index+paths.length === selectedBox && (
-                                    <G rotation={getRectangleOrientation(path)} origin={`${getCenterX(path, true)},${getCenterY(path, true)}`}>
-                                        <SvgText
-                                            x={getCenterX(path)} y={getCenterY(path)} fontSize={20}
-                                        >
-                                            {selectedUser ? selectedUser : ""}
-                                        </SvgText>
-                                    </G>
-                                )} */}
                                 
                             </React.Fragment>
                         ))} 
