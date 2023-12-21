@@ -250,16 +250,18 @@ const ModulPinyesScreen = ({ showSheet }) => {
                 
                 <View style={styles.userList}>
                     {stateUserList.map((usr, index) => (
-                        <TouchableOpacity onPress={() => handleUserPress(usr)}>
-                            <HStack>
-                                <Text 
-                                    style={[
-                                        usr === selectedUser && { fontWeight: 'bold' },
-                                        usr === selectedUser && { color: 'green' },
-                                    ]}
-                                >{usr}</Text>
-                            </HStack>
-                        </TouchableOpacity>
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => handleUserPress(usr)}>
+                                <HStack>
+                                    <Text 
+                                        style={[
+                                            usr === selectedUser && { fontWeight: 'bold' },
+                                            usr === selectedUser && { color: 'green' },
+                                        ]}
+                                    >{usr}</Text>
+                                </HStack>
+                            </TouchableOpacity>
+                        </View>
                     ))}
                 </View>
 
