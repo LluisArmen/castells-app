@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Button, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { HStack, Spacer } from 'react-native-stacks';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { doc, setDoc, getDoc, updateDoc, or } from "firebase/firestore";
@@ -7,11 +7,17 @@ import { typography } from '../../design/Typography';
 import useUserStore from '../../store/UserStore';
 import { Organisation } from '../../models/Organisation';
 import { RequestStatus, emptyRequest } from '../../models/Request';
+import { NavigationProp } from '@react-navigation/native';
 import useOrganisationStore from '../../store/OrganisationStore';
 import { v4 as uuid } from 'uuid';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Button } from 'react-native-paper';
 
-const JoinOrganisationScreen = () => {
+interface RouterProps {
+    navigation: NavigationProp<any, any>;
+}
+
+const JoinOrganisationScreen = ({ navigation }: RouterProps) => {
     const {user, setUser} = useUserStore()
     const {setOrganisation} = useOrganisationStore()
     const [organisationId, setOrganisationId] = useState('');
@@ -82,6 +88,7 @@ const JoinOrganisationScreen = () => {
             const updatedUser = user;
             updatedUser.organisationId = "pending";
             setUser(updatedUser);
+            navigation.navigate('WaitRequestAcceptanceScreen');
         } catch (error) {
             console.error("❌ Error updating user data: ", error);
             throw new Error("Could not update User. Please try again");
@@ -105,7 +112,11 @@ const JoinOrganisationScreen = () => {
                         { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
                         : (
                             <>
-                            <Button title="Join" onPress={ joinOrganisation } />
+                                <View style={styles.buttonContainer}>
+                                    <Button mode="contained" onPress={joinOrganisation}>
+                                        Join
+                                    </Button>
+                                </View>
                             </>
                         )}
                         
@@ -131,22 +142,25 @@ const styles = StyleSheet.create({
 
     textInput: {
         marginVertical: 6,
-        marginHorizontal: 20,
-        height: 50,
+        height: 45,
         borderWidth: 1,
-        borderRadius: 25,
+        borderRadius: 12,
         paddingHorizontal: 24,
         backgroundColor: 'white',
     },
 
     rectangle: {
-        minWidth: '85%', // Adjust width as needed
+        minWidth: '100%', // Adjust width as needed
         height: 180, // Adjust height as needed
         backgroundColor: 'blue', // Set the background color
         borderRadius: 12, // Set the corner radius
         marginVertical: 24,
         
-      },
+    },
+
+    buttonContainer: {
+        marginTop: 48,
+    },
 });
   
 export default JoinOrganisationScreen;

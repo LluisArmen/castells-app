@@ -12,18 +12,21 @@ import useOrganisationStore from '../store/OrganisationStore';
 import { Role } from '../models/User';
 import * as Clipboard from 'expo-clipboard';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import LoginViewModel from './Auth/LoginViewModel';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const ProfileScreen = ({ navigation }: RouterProps) => {
-  const {user, setUser} = useUserStore()
-  const {organisation, setOrganisation} = useOrganisationStore()
+  const {user, setUser} = useUserStore();
+  const {organisation, setOrganisation} = useOrganisationStore();
   const [isTextCopied, setIsTextCopied] = useState(false);
   const [textInput, setTextInput] = useState('');
   const [organisationExists, setOrganisationExists] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const loginViewModel = LoginViewModel();
 
   function copyToClipboard(text: string) {
     Clipboard.setStringAsync(text);
@@ -110,9 +113,7 @@ const ProfileScreen = ({ navigation }: RouterProps) => {
               <HStack>
                 <Spacer></Spacer>
                 <CustomButton title="Log Out" onPress={() => {
-                    FIREBASE_AUTH.signOut(), 
-                    setUser(null),
-                    setOrganisation(null)
+                    loginViewModel.logOut();
                   }} />
                 <Spacer></Spacer>
               </HStack>

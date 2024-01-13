@@ -22,8 +22,6 @@ export function WaitRequestAcceptanceNavigator() {
   return (
     <Stack.Navigator initialRouteName='WaitRequestAcceptanceNavigator'>
       <Stack.Screen name="WaitRequestAcceptanceScreen" component={WaitRequestAcceptanceScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name="Register" component={RegistrationScreen}/>
     </Stack.Navigator>
   )
 }
@@ -55,6 +53,12 @@ export function OrganisationBifurcationNavigator() {
           headerTitle: '',
           headerShadowVisible: false,
         }}/>
+      <Stack.Screen 
+        name="WaitRequestAcceptanceScreen" 
+        component={WaitRequestAcceptanceScreen} 
+        options={{ 
+          headerShown: false 
+      }}/>
     </Stack.Navigator>
   )
 }

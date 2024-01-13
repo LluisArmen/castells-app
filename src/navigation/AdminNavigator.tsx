@@ -12,7 +12,6 @@ export function AdminNavigator() {
   return (
     <Stack.Navigator initialRouteName='Admin'>
       <Stack.Screen name="AdminScreen" component={AdminScreen} options={{ headerShown: false }}/>
-      
       <Stack.Screen name="JoinRequestsScreen" component={JoinRequestsScreen} options={joinRequestsScreenOptions}/>
       <Stack.Screen name="RolesManagerScreen" component={RolesManagerScreen} options={rolesManagerScreenOptions}/>
       <Stack.Screen name="RoleStatusScreen" component={RoleStatusScreen} options={roleStatusScreenOptions}/>

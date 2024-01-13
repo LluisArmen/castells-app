@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, Button, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
-import { HStack, Spacer } from 'react-native-stacks';
+import { ScrollView, View, Text, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { doc, collection, getDocs, onSnapshot, setDoc, getDoc, updateDoc, query, where, limit } from "firebase/firestore";
 import { typography } from '../../design/Typography';
 import useUserStore from '../../store/UserStore';
 import { Organisation } from '../../models/Organisation';
 import useOrganisationStore from '../../store/OrganisationStore';
-import { User } from 'firebase/auth';
+import { NavigationProp } from '@react-navigation/native';
 import { AppUser } from '../../models/User';
 import { RequestStatus } from '../../models/Request';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Button } from 'react-native-paper';
+import LoginViewModel from './LoginViewModel';
 
-const WaitRequestAcceptanceScreen = () => {
+interface RouterProps {
+    navigation: NavigationProp<any, any>;
+}
+const WaitRequestAcceptanceScreen = ({ navigation }: RouterProps) => {
     const {user, setUser} = useUserStore()
     const {organisation, setOrganisation} = useOrganisationStore()
     const [loading, setLoading] = useState(false);
+    const viewModel = LoginViewModel();
 
     async function checkAgain() {
         setLoading(true)
@@ -99,13 +104,26 @@ const WaitRequestAcceptanceScreen = () => {
     return (
         <TouchableWithoutFeedback onPress={ () => { Keyboard.dismiss() } }>
             <View style={styles.container}>
-                <Text style={typography.title.medium}>{"Your request has been sent!"}</Text>
-                <Text style={typography.body.medium}>{"Waiting to be accepted..."}</Text>
+                <Text style={typography.title.small}>{"Your request has been sent 🚀"}</Text>
+
+                <View style={styles.textContainer}>
+                    <Text style={typography.body.medium}>{"Waiting to be accepted..."}</Text>
+                </View>
 
                 { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
                 : (
                     <>
-                        <Button title="Check again" onPress={ checkAgain } />
+                        <View style={styles.buttonContainer}>
+                            <Button mode="contained" onPress={checkAgain}>
+                                Check again
+                            </Button>
+                        </View>
+
+                        <View style={styles.buttonContainer}>
+                            <Button mode="outlined" onPress={() => viewModel.logOut()}>
+                                Logout
+                            </Button>
+                        </View>
                     </>
                 )}
             </View>
@@ -140,7 +158,16 @@ const styles = StyleSheet.create({
         borderRadius: 12, // Set the corner radius
         marginVertical: 24,
         
-      },
+    },
+
+    textContainer: {
+        marginTop: 16,
+        marginBottom: 48
+    },
+
+    buttonContainer: {
+        marginTop: 8,
+    },
 });
   
 export default WaitRequestAcceptanceScreen;

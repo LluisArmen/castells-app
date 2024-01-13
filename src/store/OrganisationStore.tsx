@@ -7,7 +7,7 @@ interface OrganisationState {
 }
 
 const useOrganisationStore = create<OrganisationState>((set) => ({
-  organisation: null, //defaultUser
+  organisation: null,
   setOrganisation: (newOrganisation: Organisation) =>
     set((state) => ({
       organisation: newOrganisation

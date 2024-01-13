@@ -15,22 +15,22 @@ const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   const {user} = useUserStore()
-    return (
-      <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
-          <Tab.Screen name="Agenda" component={AgendaNavigator} options={agendaTabOptions} />
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} options={homeTabOptions} />
+      <Tab.Screen name="Agenda" component={AgendaNavigator} options={agendaTabOptions} />
 
-          {(user.role === Role.admin || user.role === Role.owner) && (
-            <Tab.Screen name="Admin" component={AdminNavigator} options={adminTabOptions} />
-          )}
-          
-          <Tab.Screen name="Profile" component={ProfileScreen} options={profileTabOptions} />
+      {(user.role === Role.admin || user.role === Role.owner) && (
+        <Tab.Screen name="Admin" component={AdminNavigator} options={adminTabOptions} />
+      )}
+      
+      <Tab.Screen name="Profile" component={ProfileScreen} options={profileTabOptions} />
 
-          {user.role === Role.owner && (
-            <Tab.Screen name="Dev" component={DevScreen} options={devTabOptions} />
-          )}
-      </Tab.Navigator>
-    );
+      {user.role === Role.owner && (
+        <Tab.Screen name="Dev" component={DevScreen} options={devTabOptions} />
+      )}
+    </Tab.Navigator>
+  );
 };
 
 export default AppNavigator;

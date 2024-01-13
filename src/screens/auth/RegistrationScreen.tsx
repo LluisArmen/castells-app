@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView, Alert } from 'react-native';
 import { typography } from '../../design/Typography';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../../FirebaseConfig';
 import { HStack, Spacer } from 'react-native-stacks';
@@ -8,6 +8,7 @@ import { NavigationProp } from '@react-navigation/native';
 import { emptyUser } from '../../models/User' 
 import { doc, setDoc } from "firebase/firestore";
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Button } from 'react-native-paper';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -99,7 +100,11 @@ const RegistrationScreen = ({ navigation }: RouterProps) => {
             { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
             : (
               <>
-                <Button title="Create account" onPress={signUp} />
+                <View style={styles.buttonContainer}>
+                  <Button mode="contained" onPress={signUp}>
+                    Create account
+                  </Button>
+                </View>
               </>
             )}
 
@@ -119,7 +124,7 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: 'white',
     justifyContent: 'center',
-    marginHorizontal: 20,
+    //marginHorizontal: 20,
     flex: 1,
   },
   title: {
@@ -129,15 +134,20 @@ const styles = StyleSheet.create({
   textInput: {
     marginVertical: 6,
     marginHorizontal: 20,
-    height: 50,
+    height: 45,
     borderWidth: 1,
-    borderRadius: 25,
+    borderRadius: 12,
     paddingHorizontal: 24,
     backgroundColor: 'white',
   },
 
   topMargin: {
     marginTop: 30,
+  },
+
+  buttonContainer: {
+    paddingHorizontal: 24,
+    marginVertical: 48
   },
 });
 

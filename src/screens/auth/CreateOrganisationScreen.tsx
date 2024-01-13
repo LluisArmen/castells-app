@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Button, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { typography } from '../../design/Typography';
@@ -9,6 +9,7 @@ import { emptyOrganisation } from '../../models/Organisation';
 import { v4 as uuid } from 'uuid';
 import { Role } from '../../models/User';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Button } from 'react-native-paper';
 
 const CreateOrganisationScreen = () => {
     const {user, setUser} = useUserStore()
@@ -78,7 +79,11 @@ const CreateOrganisationScreen = () => {
                         { loading ? ( <ActivityIndicator size="large" color="#0000ff"/> ) 
                         : (
                             <>
-                            <Button title="Create" onPress={ createOrganisation } />
+                                <View style={styles.buttonContainer}>
+                                    <Button mode="contained" onPress={createOrganisation}>
+                                        Create
+                                    </Button>
+                                </View>
                             </>
                         )}
 
@@ -102,22 +107,24 @@ const styles = StyleSheet.create({
 
     textInput: {
         marginVertical: 6,
-        marginHorizontal: 20,
-        height: 50,
+        height: 45,
         borderWidth: 1,
-        borderRadius: 25,
+        borderRadius: 12,
         paddingHorizontal: 24,
         backgroundColor: 'white',
     },
 
     rectangle: {
-        minWidth: '85%', // Adjust width as needed
+        minWidth: '100%', // Adjust width as needed
         height: 180, // Adjust height as needed
         backgroundColor: 'blue', // Set the background color
         borderRadius: 12, // Set the corner radius
         marginVertical: 24,
-        
-      },
+    },
+
+    buttonContainer: {
+        marginTop: 48,
+    },
 });
   
 export default CreateOrganisationScreen;
