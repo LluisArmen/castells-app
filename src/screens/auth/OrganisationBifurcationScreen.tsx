@@ -1,11 +1,9 @@
-import React, { useLayoutEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { typography } from '../../design/Typography';
 import { NavigationProp } from '@react-navigation/native';
 import useUserStore from '../../store/UserStore';
-import { Spacer } from 'react-native-stacks';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Button } from 'react-native-paper';
 import LoginViewModel from './LoginViewModel';
 
